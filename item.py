@@ -1,10 +1,12 @@
 from entity import *
-ITEMS = {"Potion": {"symbol": "P", "desc": "Heals your health like you'd expect it to. (10%)"}}
+from constants import *
 
 
 class Item(Entity):
-    def __init__(self, center, item_name):
+    def __init__(self, item_name='Nothing', center=(0, 0)):
         super(Item, self).__init__(center)
         self.hp = 0
         self.name = item_name
-        self.info = ITEMS[self.name]
+        info = ITEMS[self.name]
+        self.symbol = info['symbol']
+        self.desc = info['desc']

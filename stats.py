@@ -1,7 +1,10 @@
 from window import *
-class Stats(Window):
+
+
+# Stats window containing player details
+class Stats(Frame):
     def __init__(self, entity, anchor=(1, 1)):
-        super(Stats, self).__init__(anchor)
+        super(Stats, self).__init__(anchor, name='stats')
         self.width, self.height = (20, 30)
         self.entity = entity
 
@@ -18,7 +21,6 @@ class Stats(Window):
         for item in self.entity.inventory:
             count += 1
 
-
         offset = 2
         increment = 2
 
@@ -28,17 +30,17 @@ class Stats(Window):
 
         # Draw life points
         con.print(left_anchor, top_anchor + offset,
-                    "Life: " + str(self.entity.hp))
+                  "Life: " + str(self.entity.hp))
         offset += increment
 
         # Draw position
         con.print(left_anchor, top_anchor + offset,
-                    "X,Y: " + str(self.entity.pos))
+                  "X,Y: " + str(self.entity.pos))
         offset += increment
 
         # Draw Current Weapon
         con.print(left_anchor, top_anchor + offset,
-                    "Weapon: " + str(self.entity.weapon))
+                  "Weapon: " + str(self.entity.weapon))
         offset += increment
 
         # Draw Inventory
