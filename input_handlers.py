@@ -1,42 +1,58 @@
 import tcod.event
 import tcod.event_constants as keys
-UP_KEYS = [keys.K_w, keys.K_UP, keys.K_KP_8]
-DOWN_KEYS = [keys.K_s, keys.K_DOWN, keys.K_KP_2]
-RIGHT_KEYS = [keys.K_d, keys.K_RIGHT, keys.K_KP_6]
-LEFT_KEYS = [keys.K_a, keys.K_LEFT, keys.K_KP_4]
-UP_LEFT_KEYS = [keys.K_q, keys.K_KP_7]
-UP_RIGHT_KEYS = [keys.K_e, keys.K_KP_9]
-DOWN_LEFT_KEYS = [keys.K_z, keys.K_KP_1]
-DOWN_RIGHT_KEYS = [keys.K_c, keys.K_KP_3]
+
+
+# Maps an input key to a movement value
+class KeysToMove:
+    def __init__(self):
+        self.key_map = {
+                       'UP_KEY': [keys.K_w, keys.K_UP, keys.K_KP_8],
+                       'DOWN_KEY': [keys.K_s, keys.K_DOWN, keys.K_KP_2],
+                       'RIGHT_KEY': [keys.K_d, keys.K_RIGHT, keys.K_KP_6],
+                       'LEFT_KEY': [keys.K_a, keys.K_LEFT, keys.K_KP_4],
+                       'UP_LEFT_KEY': [keys.K_q, keys.K_KP_7],
+                       'UP_RIGHT_KEY': [keys.K_e, keys.K_KP_9],
+                       'DOWN_LEFT_KEY': [keys.K_z, keys.K_KP_1],
+                       'DOWN_RIGHT_KEY': [keys.K_c, keys.K_KP_3]
+                       }
+
+        self.move_map = {
+                        'UP_KEY': (0, -1),
+                        'DOWN_KEY': (0, 1),
+                        'RIGHT_KEY': (1, 0),
+                        'LEFT_KEY': (-1, 0),
+                        'UP_LEFT_KEY': (-1, -1),
+                        'UP_RIGHT_KEY': (1, -1),
+                        'DOWN_LEFT_KEY': (-1, 1),
+                        'DOWN_RIGHT_KEY': (1, 1)
+                        }
+
+    def key_to_move(self, symbol):
+        for key, value in self.key_map.items():
+            if symbol in value:
+                return self.move_map[key]
+        return None
+
+
+# Initializes the class
+key_mapper = KeysToMove()
 
 
 # Returns dict containing result
-# TODO: make less ugly
 def handle_keys(key):
     type = key.type
     symbol = key.sym
     modifiers = key.mod
-    
-    # Movement
-    if symbol in UP_KEYS:
-        return {'move': (0, -1)}
-    elif symbol in DOWN_KEYS:
-        return {'move': (0, 1)}
-    elif symbol in RIGHT_KEYS:
-        return {'move': (1, 0)}
-    elif symbol in LEFT_KEYS:
-        return {'move': (-1, 0)}
-    elif symbol in UP_RIGHT_KEYS:
-        return {'move': (1, -1)}
-    elif symbol in UP_LEFT_KEYS:
-        return {'move': (-1, -1)}
-    elif symbol in DOWN_RIGHT_KEYS:
-        return {'move': (1, 1)}
-    elif symbol in DOWN_LEFT_KEYS:
-        return {'move': (-1, 1)}
 
+    # Movement
+    movement = key_mapper.key_to_move(symbol)
+    if key_mapper.key_to_move(symbol) is not None:
+        return {'move': movement}
+
+    # Menus
     if symbol is keys.K_i:
         return {'toggle': 'inventory'}
+
     # System
     if symbol == keys.K_ESCAPE:
         return {'exit': True}
@@ -44,7 +60,6 @@ def handle_keys(key):
         return {'fullscreen': True}
 
     return {}
-
 
 def handle_mouse(mouse):
     return {}
