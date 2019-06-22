@@ -9,9 +9,9 @@ def action_handler(action, window, player):
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
         name = top_frame.name
-        print(name)
         if name is 'inventory':
             # Manipulate inventory window
+            top_frame.select(move)
             pass
 
         elif name is 'gamemap':
@@ -32,6 +32,7 @@ def action_handler(action, window, player):
             if toggle is 'inventory':
                 inventory = Inventory(player, size=(SCREEN_WIDTH, SCREEN_HEIGHT))
                 inventory.history = (window.frames, window.frames_ordered)
+                inventory.select(None)
 
                 window.remove_frames()
                 window.add_frame(inventory)
