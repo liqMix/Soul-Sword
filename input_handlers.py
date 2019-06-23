@@ -61,5 +61,6 @@ def handle_keys(key):
 
     return {}
 
+
 def handle_mouse(mouse):
     return {}

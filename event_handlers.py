@@ -19,11 +19,9 @@ def action_handler(action, window, player):
             if top_frame.check_move(move, player):
                 player.move(move)
                 top_frame.get_items(player)
-                print(str(player.pos))
             return True
 
     if toggle:
-        print(toggle)
         if toggle in window.frames:
             window.frames, window.frames_ordered = window.frames[toggle].history
 
