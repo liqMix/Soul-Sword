@@ -15,13 +15,12 @@ class GameMap(Frame):
     def __init__(self, anchor=(0,0), size_x=80, size_y=24, entities=[]):
         super(GameMap, self).__init__(anchor=anchor, name='gamemap')
         self.map = tcod.map.Map(width=size_x, height=size_y)
-        self.cells = [[self.Cell() for y in range(size_y)] for x in range(size_x)]
+        self.cells = [[self.Cell() for y in range(size_y+1)] for x in range(size_x+1)]
         self.entities = entities
         self.size_x = size_x // 2
         self.size_y = size_y // 2
         self.items = []
         self.top_left = (self.x - self.size_x, self.y - self.size_y)
-
         self.populate()
 
     # Check is move to destination is legal for entity
@@ -45,12 +44,13 @@ class GameMap(Frame):
 
     # Return list of items and remove from map
     def get_items(self, entity):
+
+        # Get relative position of entity
         x, y = entity.pos
         x = x - self.top_left[0]
         y = y - self.top_left[1]
 
         items_to_get = self.cells[x][y].entities
-        print(items_to_get)
         if items_to_get is not None:
             entity.add_items(items_to_get)
             for i in items_to_get:
