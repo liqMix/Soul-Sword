@@ -9,12 +9,13 @@ class Stats(Frame):
         self.entity = entity
 
     def draw(self, con):
+        # Ticks
         # Name
         # Life
         # Position
         # Weapon
-        # --------- 4 Offset
-        count = 5
+        # --------- 5 Offset
+        count = 6
         # Inventory
         #   ...
         #   ...
@@ -24,9 +25,14 @@ class Stats(Frame):
         offset = 2
         increment = 2
 
-        con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), "Player Stats")
+        con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
         top_anchor = self.y
         left_anchor = self.x + 2
+
+        # Draw ticks
+        con.print(left_anchor, top_anchor + offset,
+                  "Ticks: " + str(self.entity.controller.ticks))
+        offset += increment
 
         # Draw life points
         con.print(left_anchor, top_anchor + offset,
