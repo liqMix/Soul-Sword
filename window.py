@@ -16,7 +16,7 @@ class Window:
         self.frames_ordered = []
 
 
-class Frame():
+class Frame:
     def __init__(self, anchor=(0, 0), name='None'):
         self.anchor = anchor
         self.x, self.y = anchor
