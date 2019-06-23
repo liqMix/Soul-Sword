@@ -4,7 +4,7 @@ from game_map import *
 from stats import *
 from input_handlers import handle_keys, handle_mouse
 from event_handlers import action_handler
-
+from controller import Controller
 
 def main():
     class State(tcod.event.EventDispatch):
@@ -33,7 +33,8 @@ def main():
     center = (SCREEN_WIDTH // 2,
               SCREEN_HEIGHT // 2)
     window = Window(size=(SCREEN_WIDTH-5, SCREEN_HEIGHT-5))
-    player = Player(center)
+    controller = Controller()
+    player = Player(center, controller)
     game_map = GameMap(center, entities=[player])
     stats = Stats(player)
     window.add_frame(stats)
@@ -45,6 +46,7 @@ def main():
                                  renderer=tcod.RENDERER_SDL2)
     con = tcod.console.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
     state = State()
+
     while True:
         con.clear()
 
