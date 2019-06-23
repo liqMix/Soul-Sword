@@ -8,14 +8,19 @@ import math
 
 
 class GameMap(Frame):
+    class Cell:
+        def __init__(self):
+            self.entities = []
+
     def __init__(self, anchor=(0,0), size_x=80, size_y=24, entities=[]):
         super(GameMap, self).__init__(anchor=anchor, name='gamemap')
         self.map = tcod.map.Map(width=size_x, height=size_y)
-        self.item_map = [[[] for y in range(size_y)] for x in range(size_x)]
+        self.cells = [[self.Cell() for y in range(size_y)] for x in range(size_x)]
         self.entities = entities
         self.size_x = size_x // 2
         self.size_y = size_y // 2
         self.items = []
+        self.top_left = (self.x - self.size_x, self.y - self.size_y)
 
         self.populate()
 
@@ -41,23 +46,24 @@ class GameMap(Frame):
     # Return list of items and remove from map
     def get_items(self, entity):
         x, y = entity.pos
-        x = x - self.x
-        y = y - self.y
+        x = x - self.top_left[0]
+        y = y - self.top_left[1]
 
-        items_to_get = self.item_map[x][y]
+        items_to_get = self.cells[x][y].entities
+        print(items_to_get)
         if items_to_get is not None:
             entity.add_items(items_to_get)
             for i in items_to_get:
                 self.items.pop(self.items.index(i))
-            self.item_map[x][y] = None
+            self.cells[x][y].entities = []
 
     # Add items to map
     def populate(self):
         for item in ITEMS.keys():
-            rand_x = math.floor(np.random.random() * ((self.size_x+1)-1))
-            rand_y = math.floor(np.random.random() * ((self.size_y+1)-1))
-            new_item = Item(item, (rand_x+self.x, rand_y+self.y))
-            self.item_map[rand_x][rand_y].append(new_item)
+            rand_x = math.floor(np.random.random() * (self.size_x*2 - 1) + 1)
+            rand_y = math.floor(np.random.random() * (self.size_y*2 - 1) + 1)
+            new_item = Item(item, (rand_x+self.top_left[0], rand_y+self.top_left[1]))
+            self.cells[rand_x][rand_y].entities.append(new_item)
             self.items.append(new_item)
 
     # Draw map to screen
