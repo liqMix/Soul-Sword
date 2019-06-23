@@ -9,18 +9,18 @@ import math
 
 class GameMap(Frame):
     class Cell:
-        def __init__(self):
-            self.entities = []
+        def __init__(self, entities=None):
+            self.entities = [entities]
 
-    def __init__(self, anchor=(0,0), size_x=80, size_y=24, entities=[]):
+    def __init__(self, anchor=(0, 0), width=80, height=24, entities=[]):
         super(GameMap, self).__init__(anchor=anchor, name='gamemap')
-        self.map = tcod.map.Map(width=size_x, height=size_y)
-        self.cells = [[self.Cell() for y in range(size_y+1)] for x in range(size_x+1)]
+        self.map = tcod.map.Map(width=width, height=height)
+        self.cells = [None for x in range(width*height)]
         self.entities = entities
-        self.size_x = size_x // 2
-        self.size_y = size_y // 2
+        self.width = width // 2
+        self.height = height // 2
         self.items = []
-        self.top_left = (self.x - self.size_x, self.y - self.size_y)
+        self.top_left = (self.x - self.width, self.y - self.height)
         self.populate()
 
     # Check is move to destination is legal for entity
@@ -34,10 +34,10 @@ class GameMap(Frame):
         if astar.get_path(entity.x, entity.y, dest_x, dest_y) is None:
             return False
 
-        elif (dest_x > (self.x + self.size_x)) or (dest_x < (self.x - self.size_x)):
+        elif (dest_x > (self.x + self.width)) or (dest_x < (self.x - self.width)):
             return False
 
-        elif (dest_y > (self.y + self.size_y)) or (dest_y < (self.y - self.size_y)):
+        elif (dest_y > (self.y + self.height)) or (dest_y < (self.y - self.height)):
             return False
 
         return True
@@ -49,37 +49,43 @@ class GameMap(Frame):
         x, y = entity.pos
         x = x - self.top_left[0]
         y = y - self.top_left[1]
-
-        items_to_get = self.cells[x][y].entities
-        if items_to_get is not None:
-            entity.add_items(items_to_get)
-            for i in items_to_get:
-                self.items.pop(self.items.index(i))
-            self.cells[x][y].entities = []
+        idx = (y * self.width) + x
+        if self.cells[idx] is not None:
+            items_to_get = self.cells[idx].entities
+            if items_to_get is not None:
+                entity.add_items(items_to_get)
+                for i in items_to_get:
+                    self.items.pop(self.items.index(i))
+                self.cells[idx].entities = []
 
     # Add items to map
     def populate(self):
         for item in ITEMS.keys():
-            rand_x = math.floor(np.random.random() * (self.size_x*2 - 1) + 1)
-            rand_y = math.floor(np.random.random() * (self.size_y*2 - 1) + 1)
+            rand_x = math.floor(np.random.random() * (self.width*2 - 1) + 1)
+            rand_y = math.floor(np.random.random() * (self.height*2 - 1) + 1)
+            idx = rand_y * self.width + rand_x
             new_item = Item(item, (rand_x+self.top_left[0], rand_y+self.top_left[1]))
-            self.cells[rand_x][rand_y].entities.append(new_item)
+
+            if self.cells[idx] is None:
+                self.cells[idx] = self.Cell(entities=new_item)
+            else:
+                self.cells[idx].entities.append(new_item)
             self.items.append(new_item)
 
     # Draw map to screen
     def draw(self, con):
-        top_edge_y = self.y - self.size_y - 1
-        bot_edge_y = self.y + self.size_y + 1
-        left_edge_x = self.x - self.size_x - 1
-        right_edge_x = self.x + self.size_x + 1
+        top_edge_y = self.y - self.height - 1
+        bot_edge_y = self.y + self.height + 1
+        left_edge_x = self.x - self.width - 1
+        right_edge_x = self.x + self.width + 1
 
         # Draw border of map
         hash = ord('#')
-        for x in range(self.size_x*2 + 2):
+        for x in range(self.width*2 + 2):
             con.put_char(x + left_edge_x, top_edge_y, hash, tcod.BKGND_NONE)
             con.put_char(x + left_edge_x, bot_edge_y, hash, tcod.BKGND_NONE)
 
-        for y in range(self.size_y*2 + 3):
+        for y in range(self.height*2 + 3):
             con.put_char(left_edge_x, y + top_edge_y, hash, tcod.BKGND_NONE)
             con.put_char(right_edge_x, y + top_edge_y, hash, tcod.BKGND_NONE)
 
@@ -90,3 +96,6 @@ class GameMap(Frame):
         # Draw items
         for item in self.items:
             item.draw(con)
+
+    def update(self):
+        pass
