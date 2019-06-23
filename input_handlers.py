@@ -42,7 +42,7 @@ key_mapper = KeysToMove()
 def handle_keys(key):
     type = key.type
     symbol = key.sym
-    modifiers = key.mod
+    mod = key.mod
 
     # Movement
     movement = key_mapper.key_to_move(symbol)
@@ -56,7 +56,7 @@ def handle_keys(key):
     # System
     if symbol == keys.K_ESCAPE:
         return {'exit': True}
-    elif (symbol == keys.K_RETURN) and (modifiers % tcod.event.KMOD_ALT):
+    elif (symbol == keys.K_RETURN) and (mod & tcod.event.KMOD_ALT):
         return {'fullscreen': True}
 
     return {}
