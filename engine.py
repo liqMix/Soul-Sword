@@ -35,7 +35,7 @@ def main():
     window = Window(size=(SCREEN_WIDTH-5, SCREEN_HEIGHT-5))
     controller = Controller()
     player = Player(center, controller)
-    game_map = GameMap(center, entities=[player])
+    game_map = GameMap(center, player=player)
     stats = Stats(player)
     window.add_frame(stats)
     window.add_frame(game_map)

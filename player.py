@@ -4,7 +4,7 @@ from entity import *
 class Player(Entity):
     def __init__(self, center, controller):
         super(Player, self).__init__(center, name='Player', symbol='@')
-        self.name = "Player"
+        self.type = 'player'
         self.color = tcod.amber
         self.controller = controller
 

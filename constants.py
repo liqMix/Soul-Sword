@@ -8,3 +8,7 @@ SCREEN_HEIGHT = 80
 ITEMS = {"Potion": {"symbol": "P", "desc": "Heals your health like you'd expect it to. (10%)"},
          "Sword":  {"symbol": "|", "desc": "Wow cool! Nice. Careful!"},
          "Nothing":   {"symbol": "n", "desc": "Truly one of a kind."}}
+
+
+def xy_to_1d(x, y, width):
+    return x + (y*width)

@@ -18,11 +18,11 @@ class Entity:
         dx, dy = move
         self.set_pos((self.x+dx, self.y+dy))
 
-    def draw(self, con):
+    def draw(self, con, x, y):
         #con.put_char(self.x, self.y,
         #             ord(self.symbol),
         #             tcod.BKGND_NONE)
-        tcod.console_put_char_ex(con, self.x, self.y, self.symbol, fore=self.color, back=con.default_bg)
+        tcod.console_put_char_ex(con, x, y, self.symbol, fore=self.color, back=con.default_bg)
 
     def set_pos(self, pos):
         self.prev_pos = self.pos
