@@ -22,7 +22,7 @@ def main():
             if fullscreen:
                 tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
-            action_handler(action, window, player)
+            action_handler(action, window, player, game_map)
 
         def ev_mousebuttondown(self, event):
             pass

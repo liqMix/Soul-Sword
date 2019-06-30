@@ -2,13 +2,14 @@ import tcod
 
 
 class Entity:
-    def __init__(self, pos=(0, 0), name=None, symbol=' ', controller=None):
+    def __init__(self, pos=(0, 0), name=None, symbol=' ', controller=None, color=tcod.white):
         self.name = name
         self.color = tcod.white
         self.pos = pos
         self.x, self.y = self.pos
         self.prev_pos = pos
         self.symbol = symbol
+        self.color = color
         self.controller = controller
         self.hp = 100
         self.weapon = "None"
