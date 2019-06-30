@@ -1,9 +1,9 @@
 class Window:
-    def __init__(self, anchor=(0,0), size=(0, 0)):
-        self.anchor = anchor
-        self.x, self.y = anchor
-        self.size = size
+    def __init__(self, center=(0, 0), size=(0, 0)):
+        self.center = center
+        self.x, self.y = center
         self.width, self.height = size
+        self.size = self.width * self.width
         self.frames = {}
         self.frames_ordered = []
 
@@ -17,8 +17,10 @@ class Window:
 
 
 class Frame:
-    def __init__(self, anchor=(0, 0), name='None'):
-        self.anchor = anchor
-        self.x, self.y = anchor
+    def __init__(self, center=(0, 0), size=(0, 0), name='None'):
+        self.center = center
+        self.x, self.y = center
+        self.width, self.height = size
+        self.size = self.width * self.width
         self.name = name
         self.history = []

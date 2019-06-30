@@ -8,25 +8,21 @@ import math
 
 
 class GameMap(Frame):
-    def __init__(self, anchor=(0, 0), size_x=500, size_y=500, player=None):
-        super(GameMap, self).__init__(anchor=anchor, name='gamemap')
+    def __init__(self, center=(0, 0), size_x=50, size_y=30, player=None):
+        super(GameMap, self).__init__(center=center, size=(size_x, size_y), name='gamemap')
         self.map = tcod.map.Map(width=size_x, height=size_y)
-        self.width = size_x
-        self.height = size_y
         self.view_x = 80
         self.view_y = 24
-        self.top_left = (self.x - self.view_x, self.y - self.view_y)
+        self.top_left_x = self.x - (self.view_x // 2)
+        self.top_left_y = self.y - (self.view_y // 2)
 
-        self.cells = [x for x in range(size_x * size_y)]
+        self.cells = [x for x in range(self.size)]
 
-        for i in range(len(self.cells)):
-            self.cells[i] = {'entity': None,
+        for i in range(self.size):
+            self.cells[i] = {'entity':   None,
                              'items':    []}
 
         self.player = player
-        self.player.x = self.width//2
-        self.player.y = self.height//2
-        self.cells[xy_to_1d(self.player.x, self.player.y, self.width)]['entity'] = self.player
         self.entities = {'player':  self.player,
                          'items':   [],
                          'enemies': []}
@@ -55,58 +51,78 @@ class GameMap(Frame):
     # Return list of items and remove from map
     def get_items(self, entity):
 
-        # Get relative position of entity
-        x, y = entity.pos
-        idx = xy_to_1d(x, y, self.width)
-
+        idx = xy_to_idx(entity.x, entity.y, self.width)
         items_to_get = self.cells[idx]['items']
-        if items_to_get is not None:
+        if items_to_get:
             entity.add_items(items_to_get)
             self.cells[idx]['items'] = []
+            for item in items_to_get:
+                self.entities['items'].remove(item)
 
     # Add items to map
     def populate(self):
         for item in ITEMS.keys():
-            rand_x = math.floor(np.random.random() * (self.width - 1) + 1)
-            rand_y = math.floor(np.random.random() * (self.height - 1) + 1)
+            rand_x = math.floor(np.random.random() * self.width)
+            rand_y = math.floor(np.random.random() * self.height)
             new_item = Item(item, (rand_x, rand_y))
-            print(xy_to_1d(rand_x, rand_y, self.width))
-            self.cells[xy_to_1d(rand_x, rand_y, self.width)]['items'].append(new_item)
+            idx = xy_to_idx(rand_x, rand_y, self.width)
+            self.cells[idx]['items'].append(new_item)
+            self.entities['items'].append(new_item)
+
+    # Update cells
+    def update_cells(self):
+        prev_x, prev_y = self.player.prev_pos
+        self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
+        self.cells[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
+
+        for e in self.entities['enemies']:
+            prev_x, prev_y = self.e.prev_pos
+            self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
+            self.cells[xy_to_idx(e.x, e.y, self.width)]['entity'] = e
 
     # Draw map to screen
     def draw(self, con):
-        view_width = self.view_x
-        view_height = self.view_y
-        top_edge_y = self.y - view_height - 1
-        bot_edge_y = self.y + view_height + 1
-        left_edge_x = self.x - view_width - 1
-        right_edge_x = self.x + view_width + 1
+        self.update_cells()
+        top_edge = self.top_left_y
+        bot_edge = self.top_left_y + self.view_y
+        left_edge = self.top_left_x
+        right_edge = self.top_left_x + self.view_x
+
+        half_width = self.view_x // 2
+        half_height = self.view_y // 2
+
+        # The cells to draw
+        cells_x_range = range(self.player.x - half_width, self.player.x + half_width)
+        cells_y_range = range(self.player.y - half_height, self.player.y + half_height)
+
+        for y in cells_y_range:
+            if 0 <= y < self.height:
+                for x in cells_x_range:
+                    if 0 <= x < self.width:
+                        idx = xy_to_idx(x, y, self.width)
+                        rel_x = x - self.player.x
+                        rel_y = y - self.player.y
+                        cell = self.cells[idx]
+                        item = cell['items']
+                        entity = cell['entity']
+
+                        if entity:
+                            if entity.type is 'player':
+                                entity.draw(con, self.x, self.y)
+                            else:
+                                entity.draw(con, rel_x + self.x, rel_y + self.y)
+
+                        elif item:
+                            item[0].draw(con, rel_x + self.x, rel_y + self.y)
+                        else:
+                            con.put_char(rel_x + self.x, rel_y + self.y, ord('-'), tcod.BKGND_NONE)
 
         # Draw border of map
         view_edge_symbol = ord('#')
-        for x in range(view_width + 2):
-            con.put_char(x + left_edge_x, top_edge_y, view_edge_symbol, tcod.BKGND_NONE)
-            con.put_char(x + left_edge_x, bot_edge_y, view_edge_symbol, tcod.BKGND_NONE)
+        for x in range(self.view_x+1):
+            con.put_char(x + left_edge, top_edge, view_edge_symbol, tcod.BKGND_NONE)
+            con.put_char(x + left_edge, bot_edge, view_edge_symbol, tcod.BKGND_NONE)
 
-        for y in range(view_height + 3):
-            con.put_char(left_edge_x, y + top_edge_y, view_edge_symbol, tcod.BKGND_NONE)
-            con.put_char(right_edge_x, y + top_edge_y, view_edge_symbol, tcod.BKGND_NONE)
-
-        view_x_range = range(self.player.x - (view_width//2), self.player.x + (view_width//2))
-        view_y_range = range(self.player.y - (view_height//2), self.player.y + (view_height//2))
-        view_size = view_width * view_height
-
-        for x in view_x_range:
-            for y in view_y_range:
-                idx = xy_to_1d(x, y, self.width)
-                if idx < 0 or idx >= view_size:
-                    pass
-                else:
-                    item = self.cells[idx]['items']
-                    entity = self.cells[idx]['entity']
-                    if entity is not None:
-                        entity.draw(con, x+left_edge_x, y+top_edge_y)
-                    elif item:
-                        item[0].draw(con, x+left_edge_x, y+top_edge_y)
-                    else:
-                        con.put_char(x+left_edge_x, y+top_edge_y, ord('-'), tcod.BKGND_NONE)
+        for y in range(self.view_y):
+            con.put_char(left_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)
+            con.put_char(right_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)

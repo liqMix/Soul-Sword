@@ -34,8 +34,12 @@ def main():
               SCREEN_HEIGHT // 2)
     window = Window(size=(SCREEN_WIDTH-5, SCREEN_HEIGHT-5))
     controller = Controller()
-    player = Player(center, controller)
-    game_map = GameMap(center, player=player)
+
+    map_width = 25
+    map_height = 12
+
+    player = Player((map_width//2, map_height//2), controller)
+    game_map = GameMap(center, player=player, size_x=map_width, size_y=map_height)
     stats = Stats(player)
     window.add_frame(stats)
     window.add_frame(game_map)
