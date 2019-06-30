@@ -1,9 +1,9 @@
 import tcod.event
-from player import *
-from game_map import *
-from stats import *
-from input_handlers import handle_keys, handle_mouse
-from event_handlers import action_handler
+from entities.player import *
+from windows.game_map import *
+from windows.stats import *
+from handlers.input_handlers import handle_keys
+from handlers.event_handlers import action_handler
 from controller import Controller
 
 def main():
