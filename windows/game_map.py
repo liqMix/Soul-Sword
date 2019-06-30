@@ -2,6 +2,7 @@ import tcod.map
 import tcod.path
 import tcod.random
 from entities.item import *
+from entities.enemies import *
 from windows.window import *
 import numpy as np
 import math
@@ -69,6 +70,19 @@ class GameMap(Frame):
             self.cells[idx]['items'].append(new_item)
             self.entities['items'].append(new_item)
 
+        enemy_list = EnemyList()
+        for enemy in enemy_list.generate_enemies(10):
+            rand_x = math.floor(np.random.random() * self.width)
+            rand_y = math.floor(np.random.random() * self.height)
+            idx = xy_to_idx(rand_x, rand_y, self.width)
+            while self.cells[idx]['entity']:
+                rand_x = math.floor(np.random.random() * self.width)
+                rand_y = math.floor(np.random.random() * self.height)
+                idx = xy_to_idx(rand_x, rand_y, self.width)
+            #new_enemy = Enemy(enemy=enemy)
+            enemy.set_pos((rand_x, rand_y))
+            self.entities['enemies'].append(enemy)
+
     # Update cells
     def update_cells(self):
         prev_x, prev_y = self.player.prev_pos
@@ -76,7 +90,7 @@ class GameMap(Frame):
         self.cells[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
 
         for e in self.entities['enemies']:
-            prev_x, prev_y = self.e.prev_pos
+            prev_x, prev_y = e.prev_pos
             self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
             self.cells[xy_to_idx(e.x, e.y, self.width)]['entity'] = e
 
