@@ -43,7 +43,7 @@ def main():
     stats = Stats(player)
     window.add_frame(stats)
     window.add_frame(game_map)
-    tcod.console_set_custom_font('tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     con_root = tcod.console_init_root(w=SCREEN_WIDTH, h=SCREEN_HEIGHT,
                                  title='CorpseSword',
                                  vsync=True,
