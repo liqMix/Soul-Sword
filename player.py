@@ -2,11 +2,10 @@ from entity import *
 
 
 class Player(Entity):
-    def __init__(self, center, controller):
-        super(Player, self).__init__(center, name='Player', symbol='@')
-        self.name = "Player"
+    def __init__(self, pos=(0, 0), controller=None):
+        super(Player, self).__init__(pos, 'Player', '@', controller)
+        self.type = 'player'
         self.color = tcod.amber
-        self.controller = controller
 
     def move(self, move):
         super(Player, self).move(move)
