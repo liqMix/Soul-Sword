@@ -24,6 +24,7 @@ class GameMap(Frame):
                              'items':    []}
 
         self.player = player
+        self.player.set_pos((size_x//2, size_y//2))
         self.entities = {'player':  self.player,
                          'items':   [],
                          'enemies': []}
@@ -36,14 +37,18 @@ class GameMap(Frame):
         dest_x = entity.x + dest_x
         dest_y = entity.y + dest_y
 
+        # Check if currently occupied
+        if self.cells[xy_to_idx(dest_x, dest_y, self.width)]['entity']:
+            return False
+
         # Find walkable path to destination
         astar = tcod.path.AStar(self.map.walkable)
         if astar.get_path(entity.x, entity.y, dest_x, dest_y) is None:
             return False
 
+        # Check bounds of map
         elif (dest_x >= self.width) or (dest_x < 0):
             return False
-
         elif (dest_y >= self.height) or (dest_y < 0):
             return False
 
