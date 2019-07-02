@@ -38,7 +38,7 @@ def main():
     map_width = 25
     map_height = 12
 
-    player = Player((map_width//2, map_height//2), controller)
+    player = Player(controller=controller)
     game_map = GameMap(center, player=player, size_x=map_width, size_y=map_height)
     stats = Stats(player)
     window.add_frame(stats)
