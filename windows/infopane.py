@@ -3,6 +3,8 @@ from windows.stats import Stats
 from entities.entity import Entity
 from constants import xy_to_idx
 import tcod
+import time
+import threading
 
 
 class InfoPane(Frame):
@@ -25,16 +27,13 @@ class InfoPane(Frame):
         if (self.game_map.top_left_x < dx < self.game_map.top_left_x + self.game_map.view_x) and \
            (self.game_map.top_left_y < dy < self.game_map.top_left_y + self.game_map.view_y):
             self.entity.move(move)
-        self.selection = self.game_map.get_entity_from_abs(self.entity.pos)
-        self.stats = Stats(self.selection, self.center)
+
+        self.selection = self.game_map.get_cell_from_abs(self.entity.pos)
 
     def draw(self, con):
-        self.stats.draw(con)
         if self.count < 10:
             if self.selection:
                 self.entity.symbol = self.selection.symbol
-            else:
-                self.entity.symbol = '-'
         else:
             self.entity.symbol = '*'
             if self.count > 20:
@@ -42,3 +41,6 @@ class InfoPane(Frame):
 
         self.entity.draw(con, self.entity.x, self.entity.y)
         self.count += 1
+
+    def draw_infopane(self, cell):
+        pass

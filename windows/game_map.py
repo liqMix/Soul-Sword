@@ -127,11 +127,10 @@ class GameMap(Frame):
             con.put_char(left_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)
             con.put_char(right_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)
 
-    def get_entity_from_abs(self, pos):
+    def get_cell_from_abs(self, pos):
         x, y = pos
         x = x - self.top_left_x
         y = y - self.top_left_y
-        idx = xy_to_idx(x, y, self.width)
-        print(idx)
-        print(self.size)
-        return self.cells[idx]['entity']
+        cell = self.cells[xy_to_idx(x, y, self.width)]
+        print(cell)
+        return cell

@@ -2,6 +2,7 @@ from windows.inventory import *
 from windows.game_map import *
 from windows.infopane import *
 
+
 def action_handler(action, window, player, map):
     move = action.get('move')
     toggle = action.get('toggle')
@@ -21,13 +22,16 @@ def action_handler(action, window, player, map):
             return True
 
     if toggle:
+
+        # Toggle off
         if toggle in window.frames:
             if toggle is 'inventory':
                 window.frames, window.frames_ordered = window.frames[toggle].history
             else:
                 window.remove_frame(toggle)
+
+        # Toggle on
         else:
-            # Add window
             if toggle is 'inventory':
                 inventory = Inventory(player, size=(SCREEN_WIDTH, SCREEN_HEIGHT))
                 inventory.history = (window.frames, window.frames_ordered)
@@ -43,5 +47,4 @@ def action_handler(action, window, player, map):
                 info_pane = InfoPane(init_pos, anchor, map)
                 info_pane.history = (window.frames, window.frames_ordered)
 
-                #window.remove_frames()
                 window.add_frame(info_pane)
