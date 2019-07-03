@@ -16,13 +16,14 @@ import time
 
 
 class InmateList:
-    def __init__(self):
-        self.source_path = "sources.txt"
-        self.api_key = "key.txt"
+    def __init__(self, num):
+        self.source_path = "data/sources.txt"
+        self.api_key = "data/key.txt"
         self.black_list = []
         self.inmate_list = []
         self.source_ids = []
         self.load_sources()
+        self.populate_inmates(num)
 
     def load_sources(self):
         # Online
@@ -56,10 +57,14 @@ class InmateList:
                                         + source_id,
                                         headers=headers).json()['records']
 
-                if response[0]['charges'] and \
-                        (response[0]['mugshot'] != 'https://imgstore.jailbase.com/widgets/NoMug.gif'):
+                i = 0
+                while i < 10 and i < len(response):
+                    if self.can_add(response[i]):
+                        break
+                    i += 1
 
-                    response = response[0]
+                if i < 10:
+                    response = response[i]
                     inmate = {'name':    response['name'],
                               'mugshot': response['mugshot'],
                               'charges': response['charges'],
@@ -83,3 +88,19 @@ class InmateList:
         with open('sources.txt', 'w') as file:
             for source_id in self.source_ids:
                 file.write(source_id + '\n')
+
+    def can_add(self, inmate_to_add):
+        # Need charges to define enemy stats
+        if not inmate_to_add['charges']:
+            return False
+
+        # Only inmates with pictures
+        if inmate_to_add['mugshot'] == 'https://imgstore.jailbase.com/widgets/NoMug.gif':
+            return False
+
+        # If inmate already in list
+        for i in self.inmate_list:
+            if inmate_to_add['name'] == i['name']:
+                return False
+
+        return True

@@ -4,6 +4,7 @@ import tcod.random
 from entities.item import *
 from entities.enemies import *
 from windows.window import *
+from data.load_inmates import InmateList
 import numpy as np
 import math
 
@@ -75,8 +76,8 @@ class GameMap(Frame):
             self.cells[idx]['items'].append(new_item)
             self.entities['items'].append(new_item)
 
-        enemy_list = EnemyList()
-        for enemy in enemy_list.generate_enemies(10):
+        enemies = InmateList(3)
+        for enemy in enemies.inmate_list:
             rand_x = math.floor(np.random.random() * self.width)
             rand_y = math.floor(np.random.random() * self.height)
             idx = xy_to_idx(rand_x, rand_y, self.width)
@@ -84,9 +85,9 @@ class GameMap(Frame):
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
-            #new_enemy = Enemy(enemy=enemy)
-            enemy.set_pos((rand_x, rand_y))
-            self.entities['enemies'].append(enemy)
+            new_enemy = Enemy(inmate=enemy)
+            new_enemy.set_pos((rand_x, rand_y))
+            self.entities['enemies'].append(new_enemy)
 
     # Update cells
     def update_cells(self):
