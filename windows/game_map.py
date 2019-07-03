@@ -145,3 +145,12 @@ class GameMap(Frame):
         for y in range(self.view_y):
             con.put_char(left_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)
             con.put_char(right_edge, y + top_edge, view_edge_symbol, tcod.BKGND_NONE)
+
+    def get_cell_from_abs(self, pos):
+        x, y = pos
+        rel_x = x - self.x + self.player.x
+        rel_y = y - self.y + self.player.y
+        idx = xy_to_idx(rel_x, rel_y, self.width)
+        cell = self.cells[idx]
+        print(cell)
+        return cell

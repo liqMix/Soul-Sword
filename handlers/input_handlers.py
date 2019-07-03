@@ -52,11 +52,13 @@ def handle_keys(key):
     # Menus
     if symbol is keys.K_i:
         return {'toggle': 'inventory'}
+    if symbol is keys.K_f:
+        return {'toggle': 'info_pane'}
 
     # System
     if symbol == keys.K_ESCAPE:
         return {'exit': True}
-    elif (symbol == keys.K_RETURN) and (mod & tcod.event.KMOD_ALT):
+    if (symbol == keys.K_RETURN) and (mod & tcod.event.KMOD_ALT):
         return {'fullscreen': True}
 
     return {}

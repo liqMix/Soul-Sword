@@ -33,12 +33,10 @@ class Inventory(Frame):
                 offset += increment
 
     def select(self, move):
-        if move is None:
+        if not move:
             if not self.entity.inventory:
-                print("Here")
                 return
             self.selection = self.entity.inventory[0]
-            print(self.selection)
             return
 
         x, y = move

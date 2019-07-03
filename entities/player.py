@@ -6,6 +6,7 @@ class Player(Entity):
         super(Player, self).__init__(pos, 'Player', '@', controller)
         self.type = 'player'
         self.color = tcod.amber
+        self.desc = "The player"
 
     def move(self, move):
         super(Player, self).move(move)
