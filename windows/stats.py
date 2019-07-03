@@ -25,8 +25,8 @@ class Stats(Frame):
             # Inventory
             #   ...
             #   ...
-            for item in self.entity.inventory:
-                count += 1
+            #for item in self.entity.inventory:
+            #    count += 1
 
             con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
             top_anchor = self.y

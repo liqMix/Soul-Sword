@@ -10,14 +10,8 @@ class Enemy(Entity):
         super(Enemy, self).__init__(name=inmate['name'], symbol='E')
         self.color = COLORS['enemy']
         self.type = 'enemy'
-        
-        self.height = inmate['height']
-        self.weight = inmate['weight']
-        self.sex = inmate['sex']
-        self.race = inmate['race']
-        self.eyes = inmate['eyes']
-        self.hair = inmate['hair']
-        self.image = inmate['image']
+
+        self.picture = inmate['mugshot']
         self.charges = inmate['charges']
         self.level = len(self.charges)
 

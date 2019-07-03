@@ -68,6 +68,12 @@ class InfoPane(Frame):
             offset += increment
 
             if entity.type is 'enemy':
+                con.print(left_anchor, top_anchor + offset,
+                          "Data provided by JailBase.com"
+                          "Individuals are innocent until proven guilty in a court of law." +
+                          "Data is believed to be reliable but is provided \"as is\"." +
+                          "Contact the appropriate governmental agency to verify.")
+                offset += increment
                 pass
 
             # Draw Level
