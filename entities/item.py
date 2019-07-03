@@ -11,3 +11,5 @@ class Item(Entity):
         info = ITEMS[self.name]
         self.symbol = info['symbol']
         self.desc = info['desc']
+        self.subtype = info['type']
+        self.color = COLORS[self.subtype]

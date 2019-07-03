@@ -1,4 +1,5 @@
 from entities.entity import *
+from constants import *
 import json
 import requests
 import random
@@ -7,7 +8,7 @@ import random
 class Enemy(Entity):
     def __init__(self, inmate=None, symbol='E'):
         super(Enemy, self).__init__(name=inmate['name'], symbol='E')
-        self.color = tcod.red
+        self.color = COLORS['enemy']
         self.type = 'enemy'
         
         self.height = inmate['height']
