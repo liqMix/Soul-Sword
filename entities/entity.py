@@ -12,6 +12,7 @@ class Entity:
         self.color = color
         self.controller = controller
         self.hp = 100
+        self.level = 1
         self.weapon = "None"
         self.inventory = []
 

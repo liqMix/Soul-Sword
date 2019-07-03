@@ -14,41 +14,6 @@ class Stats(Frame):
         offset = 2
         increment = 2
 
-        if self.entity.type is 'item':
-            # Name
-            # Desc
-
-            count = 2
-            con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
-            top_anchor = self.y
-            left_anchor = self.x - self.width
-
-            # Draw name
-            con.print(left_anchor, top_anchor + offset,
-                      "Name: " + str(self.entity.name))
-            offset += increment
-
-            # Draw description
-            con.print(left_anchor, top_anchor + offset,
-                      "Desc: " + str(self.entity.desc))
-            offset += increment
-
-        if self.entity.type is 'enemy':
-            count = 2
-            con.draw_frame(self.x, self.y, self.width, self.y + (offset * count), self.entity.name)
-            top_anchor = self.y
-            left_anchor = self.x - self.width
-
-            # Draw name
-            con.print(left_anchor, top_anchor + offset,
-                      "Name: " + str(self.entity.name))
-            offset += increment
-
-            # Draw description
-            con.print(left_anchor, top_anchor + offset,
-                      "Level:  " + str(self.entity.level))
-            offset += increment
-
         if self.entity.type is 'player':
             # Ticks
             # Name
@@ -66,7 +31,10 @@ class Stats(Frame):
             con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
             top_anchor = self.y
             left_anchor = self.x + 2
-
+            # Draw level
+            con.print(left_anchor, top_anchor + offset,
+                      "Level: " + str(self.entity.level))
+            offset += increment
             # Draw ticks
             con.print(left_anchor, top_anchor + offset,
                       "Ticks: " + str(self.entity.controller.ticks))
@@ -88,6 +56,7 @@ class Stats(Frame):
             offset += increment
 
             # Draw Inventory
+            '''
             con.print(left_anchor, top_anchor + offset,
                       "Inventory: ")
             offset += increment
@@ -97,3 +66,4 @@ class Stats(Frame):
                     con.print(left_anchor+2, top_anchor + offset,
                               item.name)
                     offset += increment
+            '''

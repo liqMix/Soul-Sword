@@ -129,8 +129,9 @@ class GameMap(Frame):
 
     def get_cell_from_abs(self, pos):
         x, y = pos
-        x = x - self.top_left_x
-        y = y - self.top_left_y
-        cell = self.cells[xy_to_idx(x, y, self.width)]
+        rel_x = x - self.x + self.player.x
+        rel_y = y - self.y + self.player.y
+        idx = xy_to_idx(rel_x, rel_y, self.width)
+        cell = self.cells[idx]
         print(cell)
         return cell

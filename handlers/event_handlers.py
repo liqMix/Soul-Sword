@@ -43,7 +43,7 @@ def action_handler(action, window, player, map):
 
             if toggle is 'info_pane':
                 init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-                anchor = (int(SCREEN_WIDTH/1.25), int(SCREEN_HEIGHT/1.25))
+                anchor = (SCREEN_WIDTH//4, 0)
                 info_pane = InfoPane(init_pos, anchor, map)
                 info_pane.history = (window.frames, window.frames_ordered)
 
