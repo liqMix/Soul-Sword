@@ -11,7 +11,6 @@ class InfoPane(Frame):
     def __init__(self, init_pos=(0, 0), anchor=(0, 0), game_map=None):
         super(InfoPane, self).__init__(center=anchor, name='info_pane')
         self.entity = Entity((game_map.x, game_map.y), name='selector', symbol='*', color=tcod.yellow)
-        self.count = 0
         self.game_map = game_map
         self.selection = {'entity': game_map.player, 'items': []}
 
@@ -31,18 +30,14 @@ class InfoPane(Frame):
 
     def draw(self, con):
         self.draw_infopane(con)
-        if self.count < 10:
-            if self.selection['entity']:
-                self.entity.symbol = self.selection['entity'].symbol
-            elif self.selection['items']:
-                self.entity.symbol = self.selection['items'][-1].symbol
+        if self.selection['entity']:
+            self.entity.symbol = self.selection['entity'].symbol
+        elif self.selection['items']:
+            self.entity.symbol = self.selection['items'][-1].symbol
         else:
             self.entity.symbol = '*'
-            if self.count > 20:
-                self.count = 0
 
         self.entity.draw(con, self.entity.x, self.entity.y)
-        self.count += 1
 
     def draw_infopane(self, con):
         if not self.selection:
@@ -72,10 +67,8 @@ class InfoPane(Frame):
                       "Name: " + str(entity.name))
             offset += increment
 
-            # Draw description
-            con.print(left_anchor, top_anchor + offset,
-                      "Desc: " + str(entity.desc))
-            offset += increment
+            if entity.type is 'enemy':
+                pass
 
             # Draw Level
             con.print(left_anchor, top_anchor + offset,
