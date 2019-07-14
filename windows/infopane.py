@@ -1,10 +1,6 @@
 from windows.window import Frame
-from windows.stats import Stats
 from entities.entity import Entity
-from constants import xy_to_idx
 import tcod
-import time
-import threading
 
 
 class InfoPane(Frame):
@@ -57,9 +53,9 @@ class InfoPane(Frame):
         top_anchor = self.y
         left_anchor = self.x - self.width
 
-        con.print(left_anchor, top_anchor + offset,
-                  "Entity:")
-        offset += increment
+        #con.print(left_anchor, top_anchor + offset,
+        #          "Entity:")
+        #offset += increment
 
         if entity:
             # Draw name
@@ -67,19 +63,24 @@ class InfoPane(Frame):
                       "Name: " + str(entity.name))
             offset += increment
 
-            if entity.type is 'enemy':
-                con.print(left_anchor, top_anchor + offset,
-                          "Data provided by JailBase.com"
-                          "Individuals are innocent until proven guilty in a court of law." +
-                          "Data is believed to be reliable but is provided \"as is\"." +
-                          "Contact the appropriate governmental agency to verify.")
-                offset += increment
-                pass
-
             # Draw Level
             con.print(left_anchor, top_anchor + offset,
                       "Level:  " + str(entity.level))
             offset += increment
+            if entity.type is 'enemy':
+                con.print(left_anchor, top_anchor + offset,
+                          "Data provided by JailBase.com")
+                offset += increment
+                con.print(left_anchor, top_anchor + offset,
+                          "Individuals are innocent until proven guilty in a court of law.")
+                offset += increment
+                con.print(left_anchor, top_anchor + offset,
+                          "Data is believed to be reliable but is provided \"as is\".")
+                offset += increment
+                con.print(left_anchor, top_anchor + offset,
+                          "Contact the appropriate governmental agency to verify.")
+                offset += increment
+                offset += increment
 
         con.print(left_anchor, top_anchor + offset,
                   "Ground: ")
@@ -88,10 +89,10 @@ class InfoPane(Frame):
         if items:
             for i in items:
                 con.print(left_anchor+increment, top_anchor + offset,
-                          "Name: " + str(i.name))
+                          str(i.name))
                 offset += increment
 
                 # Draw description
                 con.print(left_anchor+(increment*2), top_anchor + offset,
-                          "Desc: " + str(i.desc))
+                          str(i.desc))
                 offset += increment
