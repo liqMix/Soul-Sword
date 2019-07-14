@@ -22,7 +22,6 @@ def action_handler(action, window, player, map):
             return True
 
     if toggle:
-
         # Toggle off
         if toggle in window.frames:
             if toggle is 'inventory':
@@ -42,9 +41,10 @@ def action_handler(action, window, player, map):
                 return True
 
             if toggle is 'info_pane':
-                init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-                anchor = (SCREEN_WIDTH//4, 0)
-                info_pane = InfoPane(init_pos, anchor, map)
-                info_pane.history = (window.frames, window.frames_ordered)
+                if 'inventory' not in window.frames:
+                    init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
+                    anchor = (SCREEN_WIDTH//4, 0)
+                    info_pane = InfoPane(init_pos, anchor, map)
+                    info_pane.history = (window.frames, window.frames_ordered)
 
-                window.add_frame(info_pane)
+                    window.add_frame(info_pane)
