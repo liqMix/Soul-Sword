@@ -5,6 +5,7 @@ from entities.item import *
 from entities.enemies import *
 from windows.window import *
 from data.load_inmates import InmateList
+from map.map_gen import *
 import numpy as np
 import math
 
@@ -18,11 +19,7 @@ class GameMap(Frame):
         self.top_left_x = self.x - (self.view_x // 2)
         self.top_left_y = self.y - (self.view_y // 2)
 
-        self.cells = [x for x in range(self.size)]
-
-        for i in range(self.size):
-            self.cells[i] = {'entity':   None,
-                             'items':    []}
+        self.cells = initialize_map(self.size, self.x)
 
         self.player = player
         self.player.set_pos((size_x//2, size_y//2))
@@ -73,6 +70,8 @@ class GameMap(Frame):
             rand_y = math.floor(np.random.random() * self.height)
             new_item = Item(item, (rand_x, rand_y))
             idx = xy_to_idx(rand_x, rand_y, self.width)
+            if self.cells[idx]['entity'].type is 'obstacle':
+                self.cells[idx]['entity'] = None
             self.cells[idx]['items'].append(new_item)
             self.entities['items'].append(new_item)
 
@@ -81,15 +80,16 @@ class GameMap(Frame):
             rand_x = math.floor(np.random.random() * self.width)
             rand_y = math.floor(np.random.random() * self.height)
             idx = xy_to_idx(rand_x, rand_y, self.width)
-            while self.cells[idx]['entity']:
+            while self.cells[idx]['entity'].type is 'enemy':
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
             new_enemy = Enemy(inmate=enemy)
             new_enemy.set_pos((rand_x, rand_y))
             self.entities['enemies'].append(new_enemy)
+            self.cells[idx]['entity'] = new_enemy
 
-    # Update cells
+            # Update cells
     def update_cells(self):
         prev_x, prev_y = self.player.prev_pos
         self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
