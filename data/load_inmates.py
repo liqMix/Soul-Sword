@@ -58,25 +58,26 @@ class InmateList:
                                         headers=headers).json()['records']
 
                 i = 0
-                while i < 10 and i < len(response):
-                    if self.can_add(response[i]):
-                        break
-                    i += 1
+                if len(response) > 0:
+                    while i < 10 and i < len(response):
+                        if self.can_add(response[i]):
+                            break
+                        i += 1
 
-                if i < 10:
-                    response = response[i]
-                    inmate = {'name':    response['name'],
-                              'mugshot': response['mugshot'],
-                              'charges': response['charges'],
-                              'source':  response['more_info_url']}
+                    if i < 10 and i < len(response):
+                        response = response[i]
+                        inmate = {'name':    response['name'],
+                                  'mugshot': response['mugshot'],
+                                  'charges': response['charges'],
+                                  'source':  response['more_info_url']}
 
-                    print(inmate)
-                    self.inmate_list.append(inmate)
-                    count += 1
+                        print(inmate)
+                        self.inmate_list.append(inmate)
+                        count += 1
 
-                # remove source from list
-                else:
-                    self.source_ids.remove(source_id)
+                    # remove source from list
+                    else:
+                        self.source_ids.remove(source_id)
 
             except json.decoder.JSONDecodeError:
                 pass
@@ -85,7 +86,7 @@ class InmateList:
             time.sleep(1.25)
 
         # Write changed source list back to file
-        with open('sources.txt', 'w') as file:
+        with open('data/sources.txt', 'w') as file:
             for source_id in self.source_ids:
                 file.write(source_id + '\n')
 
