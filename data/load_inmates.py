@@ -22,8 +22,10 @@ class InmateList:
         self.black_list = []
         self.inmate_list = []
         self.source_ids = []
-        self.load_sources()
-        self.populate_inmates(num)
+        if self.load_sources():
+            self.populate_inmates(num)
+        else:
+            self.alt_source_populate(num)
 
     def load_sources(self):
         # Online
@@ -35,7 +37,10 @@ class InmateList:
             return
 
         # Read in api key
-        self.api_key = open(self.api_key).read()
+        try:
+            self.api_key = open(self.api_key).read()
+        except FileNotFoundError:
+            return False
 
         # Read in sources
         raw_sources = open(self.source_path).read().splitlines()
@@ -105,3 +110,15 @@ class InmateList:
                 return False
 
         return True
+
+    def alt_source_populate(self, num):
+        response = requests.get("https://web3.clackamas.us/roster/extract/inmates")
+        inmates = json.loads(response.text)['results']
+
+        for i in inmates[:num]:
+            print(i)
+            inmate = {'name':    i['name'],
+                      'mugshot': i['image'],
+                      'charges': i['charges'],
+                      'source':  ""}
+            self.inmate_list.append(inmate)
