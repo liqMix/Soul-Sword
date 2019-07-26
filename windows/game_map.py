@@ -1,108 +1,24 @@
 import tcod.map
 import tcod.path
 import tcod.random
-from entities.item import *
+from game_map.map import *
 from entities.enemies import *
 from windows.window import *
-from data.load_inmates import InmateList
-from map.map_gen import *
-import numpy as np
-import math
 
 
-class GameMap(Frame):
-    def __init__(self, center=(0, 0), size_x=50, size_y=30, player=None):
-        super(GameMap, self).__init__(center=center, size=(size_x, size_y), name='gamemap')
-        self.map = tcod.map.Map(width=size_x, height=size_y)
+class MapWindow(Frame):
+    def __init__(self, center=(0, 0), player=None):
+        super(MapWindow, self).__init__(center=center, name='gamemap')
+        self.map = GameMap(size_x=500, size_y=500, num_rooms=10, player=player)
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)
         self.top_left_y = self.y - (self.view_y // 2)
 
-        self.cells = initialize_map(self.size, self.x)
-
-        self.player = player
-        self.player.set_pos((size_x//2, size_y//2))
-        self.entities = {'player':  self.player,
-                         'items':   [],
-                         'enemies': []}
-
-        self.populate()
-
-    # Check is move to destination is legal for entity
-    def check_move(self, move, entity):
-        dest_x, dest_y = move
-        dest_x = entity.x + dest_x
-        dest_y = entity.y + dest_y
-
-        # Check if currently occupied
-        if self.cells[xy_to_idx(dest_x, dest_y, self.width)]['entity']:
-            return False
-
-        # Find walkable path to destination
-        astar = tcod.path.AStar(self.map.walkable)
-        if astar.get_path(entity.x, entity.y, dest_x, dest_y) is None:
-            return False
-
-        # Check bounds of map
-        elif (dest_x >= self.width) or (dest_x < 0):
-            return False
-        elif (dest_y >= self.height) or (dest_y < 0):
-            return False
-
-        return True
-
-    # Return list of items and remove from map
-    def get_items(self, entity):
-
-        idx = xy_to_idx(entity.x, entity.y, self.width)
-        items_to_get = self.cells[idx]['items']
-        if items_to_get:
-            entity.add_items(items_to_get)
-            self.cells[idx]['items'] = []
-            for item in items_to_get:
-                self.entities['items'].remove(item)
-
-    # Add items to map
-    def populate(self):
-        for item in ITEMS.keys():
-            rand_x = math.floor(np.random.random() * self.width)
-            rand_y = math.floor(np.random.random() * self.height)
-            new_item = Item(item, (rand_x, rand_y))
-            idx = xy_to_idx(rand_x, rand_y, self.width)
-            if self.cells[idx]['entity'].type is 'obstacle':
-                self.cells[idx]['entity'] = None
-            self.cells[idx]['items'].append(new_item)
-            self.entities['items'].append(new_item)
-
-        enemies = InmateList(3)
-        for enemy in enemies.inmate_list:
-            rand_x = math.floor(np.random.random() * self.width)
-            rand_y = math.floor(np.random.random() * self.height)
-            idx = xy_to_idx(rand_x, rand_y, self.width)
-            while self.cells[idx]['entity'].type is 'enemy':
-                rand_x = math.floor(np.random.random() * self.width)
-                rand_y = math.floor(np.random.random() * self.height)
-                idx = xy_to_idx(rand_x, rand_y, self.width)
-            new_enemy = Enemy(inmate=enemy)
-            new_enemy.set_pos((rand_x, rand_y))
-            self.entities['enemies'].append(new_enemy)
-            self.cells[idx]['entity'] = new_enemy
-
-            # Update cells
-    def update_cells(self):
-        prev_x, prev_y = self.player.prev_pos
-        self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
-        self.cells[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
-
-        for e in self.entities['enemies']:
-            prev_x, prev_y = e.prev_pos
-            self.cells[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
-            self.cells[xy_to_idx(e.x, e.y, self.width)]['entity'] = e
-
     # Draw map to screen
     def draw(self, con):
-        self.update_cells()
+        self.map.update_cells()
+        player = self.map.player
         top_edge = self.top_left_y
         bot_edge = self.top_left_y + self.view_y
         left_edge = self.top_left_x
@@ -112,19 +28,19 @@ class GameMap(Frame):
         half_height = self.view_y // 2
 
         # The cells to draw
-        cells_x_range = range(self.player.x - half_width, self.player.x + half_width)
-        cells_y_range = range(self.player.y - half_height, self.player.y + half_height)
+        tile_x_range = range(player.x - half_width, player.x + half_width)
+        tile_y_range = range(player.y - half_height, player.y + half_height)
 
-        for y in cells_y_range:
-            if 0 <= y < self.height:
-                for x in cells_x_range:
-                    if 0 <= x < self.width:
-                        idx = xy_to_idx(x, y, self.width)
-                        rel_x = x - self.player.x
-                        rel_y = y - self.player.y
-                        cell = self.cells[idx]
-                        item = cell['items']
-                        entity = cell['entity']
+        for y in tile_y_range:
+            if 0 <= y < self.map.height:
+                for x in tile_x_range:
+                    if 0 <= x < self.map.width:
+                        idx = xy_to_idx(x, y, self.map.width)
+                        rel_x = x - player.x
+                        rel_y = y - player.y
+                        tile = self.map.tiles[idx]
+                        item = tile['items']
+                        entity = tile['entity']
 
                         if entity:
                             if entity.type is 'player':
@@ -149,9 +65,9 @@ class GameMap(Frame):
 
     def get_cell_from_abs(self, pos):
         x, y = pos
-        rel_x = x - self.x + self.player.x
-        rel_y = y - self.y + self.player.y
-        idx = xy_to_idx(rel_x, rel_y, self.width)
-        cell = self.cells[idx]
-        print(cell)
-        return cell
+        rel_x = x - self.x + self.map.player.x
+        rel_y = y - self.y + self.map.player.y
+        idx = xy_to_idx(rel_x, rel_y, self.map.width)
+        tile = self.map.tiles[idx]
+        print(tile)
+        return tile

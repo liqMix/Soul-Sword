@@ -42,7 +42,7 @@ def main():
     map_height = 12
 
     player = Player(controller=controller)
-    game_map = GameMap(center, player=player, size_x=map_width, size_y=map_height)
+    game_map = MapWindow(center, player=player)
     stats = Stats(player)
 
     window.add_frame(stats)

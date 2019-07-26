@@ -3,7 +3,7 @@ from windows.game_map import *
 from windows.infopane import *
 
 
-def action_handler(action, window, player, map):
+def action_handler(action, window, player, map_window):
     move = action.get('move')
     toggle = action.get('toggle')
     if move:
@@ -16,9 +16,9 @@ def action_handler(action, window, player, map):
 
         elif name is 'gamemap':
             # Manipulate player's position on map
-            if top_frame.check_move(move, player):
+            if top_frame.map.check_move(move, player):
                 player.move(move)
-                top_frame.get_items(player)
+                top_frame.map.get_items(player)
             return True
 
     if toggle:
@@ -44,7 +44,7 @@ def action_handler(action, window, player, map):
                 if 'inventory' not in window.frames:
                     init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
                     anchor = (SCREEN_WIDTH//4, 0)
-                    info_pane = InfoPane(init_pos, anchor, map)
+                    info_pane = InfoPane(init_pos, anchor, map_window)
                     info_pane.history = (window.frames, window.frames_ordered)
 
                     window.add_frame(info_pane)

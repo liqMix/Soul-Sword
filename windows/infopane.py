@@ -8,13 +8,13 @@ class InfoPane(Frame):
         super(InfoPane, self).__init__(center=anchor, name='info_pane')
         self.entity = Entity((game_map.x, game_map.y), name='selector', symbol='*', color=tcod.yellow)
         self.game_map = game_map
-        self.selection = {'entity': game_map.player, 'items': []}
+        self.selection = {'entity': game_map.map.player, 'items': []}
 
     def select(self, move):
         if not move:
             return
-        dx, dy = move
 
+        dx, dy = move
         dx = self.entity.x + dx
         dy = self.entity.y + dy
 
@@ -41,21 +41,10 @@ class InfoPane(Frame):
 
         entity = self.selection['entity']
         items = self.selection['items']
-
         offset = 2
         increment = 2
-
-        # Name
-        # Desc
-
-        count = 2
-        #con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
         top_anchor = self.y
         left_anchor = self.x - self.width
-
-        #con.print(left_anchor, top_anchor + offset,
-        #          "Entity:")
-        #offset += increment
 
         if entity:
             # Draw name
@@ -67,6 +56,7 @@ class InfoPane(Frame):
             con.print(left_anchor, top_anchor + offset,
                       "Level:  " + str(entity.level))
             offset += increment
+
             if entity.type is 'enemy':
                 con.print(left_anchor, top_anchor + offset,
                           "Data provided by JailBase.com")
