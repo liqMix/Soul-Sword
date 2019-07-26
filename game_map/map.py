@@ -76,11 +76,11 @@ class GameMap:
             while not self.area_free(hallway):
 
                 # Select origin room
-                room = random.choice(self.rooms)
+                origin = random.choice(self.rooms)
 
                 # Select a direction
                 direction = random.choice(directions)
-                side = room.sides[direction]
+                side = origin.sides[direction]
                 x = random.choice(side['x']) - 1
                 y = random.choice(side['y']) - 1
 
@@ -108,6 +108,10 @@ class GameMap:
 
     def area_free(self, room=None):
         if not room:
+            return False
+        if room.x2 >= self.width or room.x < 0:
+            return False
+        if room.y2 >= self.height or room.y < 0:
             return False
 
         for i in range(room.x, room.x2):
@@ -227,8 +231,8 @@ class Room:
             self.y2 = y+h
 
         self.sides = {
-            'S': {'x': range(self.x, self.x2), 'y': [self.y+1]},
-            'N': {'x': range(self.x, self.x2), 'y': [self.y2-1]},
-            'W': {'x': [self.x+1], 'y': range(self.y, self.y2)},
-            'E': {'x': [self.x2-1], 'y': range(self.y, self.y2)}
+            'S': {'x': range(self.x+1, self.x2-1), 'y': [self.y+1]},
+            'N': {'x': range(self.x+1, self.x2-1), 'y': [self.y2-1]},
+            'W': {'x': [self.x+1], 'y': range(self.y+1, self.y2-1)},
+            'E': {'x': [self.x2-1], 'y': range(self.y+1, self.y2-1)}
         }

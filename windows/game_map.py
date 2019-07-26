@@ -9,7 +9,7 @@ from windows.window import *
 class MapWindow(Frame):
     def __init__(self, center=(0, 0), player=None):
         super(MapWindow, self).__init__(center=center, name='gamemap')
-        self.map = GameMap(size_x=500, size_y=500, num_rooms=10, player=player)
+        self.map = GameMap(size_x=500, size_y=500, num_rooms=20, player=player)
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)

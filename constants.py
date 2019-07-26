@@ -35,7 +35,7 @@ ROOM = {'min_dim': 5,
 
 # HALLWAYS #
 HALLWAY = {'width': 3,
-           'min_length': 2,
+           'min_length': 3,
            'max_length': 10}
 
 # UTILITY #
