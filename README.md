@@ -19,6 +19,12 @@ I plan to use this project to explore multiple systems that I do not have much e
 	- ...
  - HTML embedded as well as executable
 
+# API Access
+An API key is required in order to access the full database. One can be acquired from https://rapidapi.com/jailbase/api/jailbase
+The key should be placed in a text file:
+<pre>data/key.txt</pre>
+If the file does not exist, an alternative reduced-size keyless source will be used instead.
+
 # Disclaimer
 Current implementation does not replace or obfuscate names sourced from JailBase.com. This may change in the future.
 
