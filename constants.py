@@ -30,7 +30,11 @@ COLORS = {'player':     tcod.amber,
           'equip':      tcod.blue}
 
 # ROOMS #
-ROOM = {'min_dim': 5,
+ROOM = {'min_rooms': 25,
+        'max_rooms': 50,
+        'min_enemies': 10,
+        'max_enemies': 25,
+        'min_dim': 5,
         'max_dim': 20}
 
 # HALLWAYS #

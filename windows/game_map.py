@@ -9,7 +9,9 @@ from windows.window import *
 class MapWindow(Frame):
     def __init__(self, center=(0, 0), player=None):
         super(MapWindow, self).__init__(center=center, name='gamemap')
-        self.map = GameMap(size_x=500, size_y=500, num_rooms=20, player=player)
+
+        num_rooms = random.randrange(ROOM['min_rooms'], ROOM['max_rooms'])
+        self.map = GameMap(size_x=500, size_y=500, num_rooms=num_rooms, player=player)
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)
@@ -51,7 +53,7 @@ class MapWindow(Frame):
                         elif item:
                             item[0].draw(con, rel_x + self.x, rel_y + self.y)
                         else:
-                            con.put_char(rel_x + self.x, rel_y + self.y, ord('-'), tcod.BKGND_NONE)
+                            con.put_char(rel_x + self.x, rel_y + self.y, ord(' '), tcod.BKGND_NONE)
 
         # Draw border of map
         view_edge_symbol = ord('#')

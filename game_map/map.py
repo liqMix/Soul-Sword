@@ -158,28 +158,24 @@ class GameMap:
     def populate(self):
         # add items
         for item in ITEMS.keys():
-            rand_x = math.floor(np.random.random() * self.width)
-            rand_y = math.floor(np.random.random() * self.height)
-            new_item = Item(item, (rand_x, rand_y))
-            idx = xy_to_idx(rand_x, rand_y, self.width)
 
-            while self.tiles[idx]['entity']:
+            idx = None
+            while idx is None or self.tiles[idx]['entity']:
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
-                new_item = Item(item, (rand_x, rand_y))
                 idx = xy_to_idx(rand_x, rand_y, self.width)
 
+            new_item = Item(item, (rand_x, rand_y))
             self.tiles[idx]['items'].append(new_item)
             self.entities['items'].append(new_item)
 
         # add enemies
-        enemies = InmateList(3)
+        num_enemies = random.randrange(ROOM['min_enemies'], ROOM['max_enemies'])
+        enemies = InmateList(num_enemies)
         for enemy in enemies.inmate_list:
-            rand_x = math.floor(np.random.random() * self.width)
-            rand_y = math.floor(np.random.random() * self.height)
-            idx = xy_to_idx(rand_x, rand_y, self.width)
 
-            while self.tiles[idx]['blocked'] or self.tiles[idx]['entity']:
+            idx = None
+            while idx is None or (self.tiles[idx]['blocked'] or self.tiles[idx]['entity']):
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
