@@ -1,4 +1,4 @@
-# Corpse Sword (tentative)
+# Soul Sword (tentative)
 My contribution to a community learning exercise for building a RogueLike game.
 https://www.reddit.com/r/roguelikedev/
 
