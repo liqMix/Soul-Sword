@@ -2,6 +2,9 @@
 My contribution to a community learning exercise for building a RogueLike game.
 https://www.reddit.com/r/roguelikedev/
 
+# Requirements
+	tcod - https://pypi.org/project/tcod/
+	
 # Description
 I plan to use this project to explore multiple systems that I do not have much experience in.
 
