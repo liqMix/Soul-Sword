@@ -24,14 +24,25 @@ ITEMS = {"Potion": {"symbol": "P",
 
 
 # COLORS #
-COLORS = {'player':     tcod.amber,
-          'enemy':      tcod.red,
-          'consumable': tcod.pink,
-          'equip':      tcod.blue}
+COLORS = {'player':       tcod.amber,
+          'enemy':        tcod.red,
+          'consumable':   tcod.pink,
+          'equip':        tcod.blue,
+          'dark_wall':    tcod.darker_gray,
+          'dark_ground':  tcod.darker_gray,
+          'light_wall':   tcod.light_gray,
+          'light_ground': tcod.light_gray,
+          }
 
+# SYMBOLS #
+SYMBOLS = {'player':    '@',
+           'wall':      '#',
+           'ground':    '.',
+           'enemy':     'E',
+           'item':      ''}
 # ROOMS #
 ROOM = {'min_rooms': 25,
-        'max_rooms': 50,
+        'max_rooms': 40,
         'min_enemies': 10,
         'max_enemies': 25,
         'min_dim': 5,
@@ -41,6 +52,9 @@ ROOM = {'min_rooms': 25,
 HALLWAY = {'width': 3,
            'min_length': 3,
            'max_length': 10}
+
+# PLAYER #
+PLAYER = {'fov_radius': 5}
 
 # UTILITY #
 

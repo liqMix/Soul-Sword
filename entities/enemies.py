@@ -7,7 +7,7 @@ import random
 
 class Enemy(Entity):
     def __init__(self, inmate=None):
-        super(Enemy, self).__init__(name=inmate['name'], symbol='E')
+        super(Enemy, self).__init__(name=inmate['name'], symbol=SYMBOLS['enemy'])
         self.color = COLORS['enemy']
         self.type = 'enemy'
 

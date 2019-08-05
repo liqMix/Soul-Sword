@@ -18,6 +18,7 @@ def action_handler(action, window, player, map_window):
             # Manipulate player's position on map
             if top_frame.map.check_move(move, player):
                 player.move(move)
+                top_frame.map.compute_fov(player.pos)
                 top_frame.map.get_items(player)
             return True
 

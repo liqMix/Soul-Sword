@@ -4,7 +4,7 @@ import tcod.random
 from game_map.map import *
 from entities.enemies import *
 from windows.window import *
-
+from constants import SYMBOLS
 
 class MapWindow(Frame):
     def __init__(self, center=(0, 0), player=None):
@@ -38,22 +38,23 @@ class MapWindow(Frame):
                 for x in tile_x_range:
                     if 0 <= x < self.map.width:
                         idx = xy_to_idx(x, y, self.map.width)
-                        rel_x = x - player.x
-                        rel_y = y - player.y
-                        tile = self.map.tiles[idx]
-                        item = tile['items']
-                        entity = tile['entity']
+                        if self.map.viewed[y, x]:
+                            rel_x = x - player.x
+                            rel_y = y - player.y
+                            tile = self.map.tiles[idx]
+                            item = tile['items']
+                            entity = tile['entity']
 
-                        if entity:
                             if entity.type is 'player':
                                 entity.draw(con, self.x, self.y)
                             else:
-                                entity.draw(con, rel_x + self.x, rel_y + self.y)
+                                if self.map.tcod_map.fov[y, x]:
+                                    entity.draw(con, rel_x + self.x, rel_y + self.y)
+                                elif entity.type in ['ground', 'wall']:
+                                    entity.draw_darker(con, rel_x + self.x, rel_y + self.y)
 
-                        elif item:
-                            item[0].draw(con, rel_x + self.x, rel_y + self.y)
-                        else:
-                            con.put_char(rel_x + self.x, rel_y + self.y, ord(' '), tcod.BKGND_NONE)
+                            if item:
+                                item[0].draw(con, rel_x + self.x, rel_y + self.y)
 
         # Draw border of map
         view_edge_symbol = ord('#')

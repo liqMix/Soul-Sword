@@ -12,34 +12,46 @@ import math
 
 class GameMap:
     def __init__(self, size_x, size_y, num_rooms, player):
-        # Holds the vision and pathing logic
-        self.map_pathing = tcod.map.Map(width=size_x, height=size_y)
-
+        # Map dimensions
         self.width = size_x
         self.height = size_y
+
+        # Holds the vision and pathing logic
+        self.tcod_map = tcod.map.Map(width=size_x, height=size_y)
+        self.tcod_map.transparent[:] = False
+
+        # Set up the map
+        print('Initializing all cells to walls...')
         self.tiles = {}
-        self.rooms = []
-        self.hallways = []
-        self.origin = (0, 0)
-        for i in range(size_x * size_y):
+        for i in range(self.width * self.height):
             self.tiles[i] = {'entity': Wall(idx_to_xy(i, size_x)),
                              'items': [],
                              'blocked': True}
-
+        self.rooms = []
+        self.hallways = []
+        self.origin = (0, 0) # Origin is set when first room is generated
         for i in range(num_rooms):
             print("Generating room: ", i)
             self.rooms.append(self.gen_room())
 
+        # Initialize player
+        print('Setting player position...')
         self.player = player
         self.player.set_pos(self.origin)
         self.tiles[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
         self.entities = {'player':  self.player,
                          'items':   [],
                          'enemies': []}
+        print('Generating initial view...')
+        self.viewed = np.ndarray((self.width, self.height), dtype=bool)
+        self.viewed[:] = False
+        self.compute_fov(self.player.pos)
+
+        print('Populating rooms with items...')
         self.populate()
 
     def gen_room(self):
-        # If first room
+        # If first room, set it at the
         if not self.rooms:
             min_d = ROOM['min_dim']
             max_d = ROOM['max_dim']
@@ -53,10 +65,11 @@ class GameMap:
 
         for i in range(room.x, room.x2):
             for j in range(room.y, room.y2):
-                self.tiles[xy_to_idx(i, j, self.width)] = {'entity': None,
+                self.tiles[xy_to_idx(i, j, self.width)] = {'entity': Ground((i, j)),
                                                            'blocked': False,
                                                            'items': []}
-                self.map_pathing.walkable[j, i] = True
+                self.tcod_map.walkable[j, i] = True
+                self.tcod_map.transparent[j, i] = True
 
         return room
 
@@ -73,6 +86,8 @@ class GameMap:
         while not self.area_free(room):
             # Create hallway
             hallway = None
+
+            # Keep generating areas until an unoccupied one is found
             while not self.area_free(hallway):
 
                 # Select origin room
@@ -100,12 +115,14 @@ class GameMap:
         self.hallways.append(hallway)
         for i in range(hallway.x, hallway.x2):
             for j in range(hallway.y, hallway.y2):
-                self.tiles[xy_to_idx(i, j, self.width)] = {'entity': None,
+                self.tiles[xy_to_idx(i, j, self.width)] = {'entity': Ground((i, j)),
                                                            'blocked': False,
                                                            'items': []}
-                self.map_pathing.walkable[j, i] = True
+                self.tcod_map.walkable[j, i] = True
+                self.tcod_map.transparent[j, i] = True
         return room
 
+    # Checks if the area is unoccupied
     def area_free(self, room=None):
         if not room:
             return False
@@ -116,7 +133,7 @@ class GameMap:
 
         for i in range(room.x, room.x2):
             for j in range(room.y, room.y2):
-                if not self.tiles[xy_to_idx(i, j, self.width)]['entity']:
+                if self.tiles[xy_to_idx(i, j, self.width)]['entity'].type is not 'wall':
                     return False
 
         return True
@@ -132,7 +149,7 @@ class GameMap:
             return False
 
         # Find walkable path to destination
-        astar = tcod.path.AStar(self.map_pathing.walkable)
+        astar = tcod.path.AStar(self.tcod_map.walkable)
         if astar.get_path(entity.x, entity.y, dest_x, dest_y) is None:
             return False
 
@@ -160,7 +177,7 @@ class GameMap:
         for item in ITEMS.keys():
 
             idx = None
-            while idx is None or self.tiles[idx]['entity']:
+            while idx is None or self.tiles[idx]['entity'].type is not 'ground':
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
@@ -175,7 +192,7 @@ class GameMap:
         for enemy in enemies.inmate_list:
 
             idx = None
-            while idx is None or (self.tiles[idx]['blocked'] or self.tiles[idx]['entity']):
+            while idx is None or (self.tiles[idx]['blocked'] or self.tiles[idx]['entity'].type is not 'ground'):
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
@@ -184,17 +201,26 @@ class GameMap:
             new_enemy.set_pos((rand_x, rand_y))
             self.entities['enemies'].append(new_enemy)
             self.tiles[idx]['entity'] = new_enemy
+            self.tiles[idx]['blocked'] = True
 
     # Update cells
     def update_cells(self):
         prev_x, prev_y = self.player.prev_pos
-        self.tiles[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
+        self.tiles[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = Ground((prev_x, prev_y))
         self.tiles[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
 
         for e in self.entities['enemies']:
             prev_x, prev_y = e.prev_pos
             self.tiles[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
             self.tiles[xy_to_idx(e.x, e.y, self.width)]['entity'] = e
+
+    # Adds viewable cells to viewed history
+    # and sets fov cells
+    def compute_fov(self, pos):
+        x, y = pos
+        radius = PLAYER['fov_radius']
+        self.tcod_map.compute_fov(x, y, radius, light_walls=True, algorithm=tcod.FOV_RESTRICTIVE)
+        self.viewed |= self.tcod_map.fov
 
 
 class Room:
