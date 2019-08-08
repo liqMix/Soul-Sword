@@ -4,7 +4,7 @@ import tcod.random
 from game_map.map import *
 from entities.enemies import *
 from windows.window import *
-from constants import SYMBOLS
+
 
 class MapWindow(Frame):
     def __init__(self, center=(0, 0), player=None):
@@ -19,7 +19,6 @@ class MapWindow(Frame):
 
     # Draw map to screen
     def draw(self, con):
-        self.map.update_cells()
         player = self.map.player
         top_edge = self.top_left_y
         bot_edge = self.top_left_y + self.view_y

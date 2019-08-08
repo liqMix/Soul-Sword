@@ -1,8 +1,5 @@
 from entities.entity import *
 from constants import *
-import json
-import requests
-import random
 
 
 class Enemy(Entity):
@@ -23,3 +20,6 @@ class Enemy(Entity):
 
     def __lt__(self, other):
         return self.level < other.level
+
+    def move(self, move):
+        super(Enemy, self).move(move)

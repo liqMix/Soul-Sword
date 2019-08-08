@@ -34,6 +34,7 @@ class GameMap:
             print("Generating room: ", i)
             self.rooms.append(self.gen_room())
 
+        self.astar = tcod.path.AStar(self.tcod_map.walkable)
         # Initialize player
         print('Setting player position...')
         self.player = player
@@ -41,7 +42,9 @@ class GameMap:
         self.tiles[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
         self.entities = {'player':  self.player,
                          'items':   [],
-                         'enemies': []}
+                         'enemies': [],
+                         'blocked': True}
+
         print('Generating initial view...')
         self.viewed = np.ndarray((self.width, self.height), dtype=bool)
         self.viewed[:] = False
@@ -144,19 +147,18 @@ class GameMap:
         dest_x = entity.x + dest_x
         dest_y = entity.y + dest_y
 
+        # Check bounds of map
+        if (dest_x >= self.width) or (dest_x < 0):
+            return False
+        elif (dest_y >= self.height) or (dest_y < 0):
+            return False
+
         # Check if currently occupied
-        if self.tiles[xy_to_idx(dest_x, dest_y, self.width)]['blocked']:
+        elif self.tiles[xy_to_idx(dest_x, dest_y, self.width)]['blocked']:
             return False
 
         # Find walkable path to destination
-        astar = tcod.path.AStar(self.tcod_map.walkable)
-        if astar.get_path(entity.x, entity.y, dest_x, dest_y) is None:
-            return False
-
-        # Check bounds of map
-        elif (dest_x >= self.width) or (dest_x < 0):
-            return False
-        elif (dest_y >= self.height) or (dest_y < 0):
+        elif self.astar.get_path(entity.y, entity.x, dest_y, dest_x) is None:
             return False
 
         return True
@@ -204,15 +206,14 @@ class GameMap:
             self.tiles[idx]['blocked'] = True
 
     # Update cells
-    def update_cells(self):
-        prev_x, prev_y = self.player.prev_pos
-        self.tiles[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = Ground((prev_x, prev_y))
-        self.tiles[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
-
-        for e in self.entities['enemies']:
-            prev_x, prev_y = e.prev_pos
-            self.tiles[xy_to_idx(prev_x, prev_y, self.width)]['entity'] = None
-            self.tiles[xy_to_idx(e.x, e.y, self.width)]['entity'] = e
+    def update_cell(self, entity):
+        prev_x, prev_y = entity.prev_pos
+        prev_tile = self.tiles[xy_to_idx(prev_x, prev_y, self.width)]
+        new_tile = self.tiles[xy_to_idx(entity.x, entity.y, self.width)]
+        prev_tile['entity'] = Ground((prev_x, prev_y))
+        prev_tile['blocked'] = False
+        new_tile['entity'] = entity
+        new_tile['blocked'] = True
 
     # Adds viewable cells to viewed history
     # and sets fov cells
@@ -221,6 +222,17 @@ class GameMap:
         radius = PLAYER['fov_radius']
         self.tcod_map.compute_fov(x, y, radius, light_walls=True, algorithm=tcod.FOV_RESTRICTIVE)
         self.viewed |= self.tcod_map.fov
+
+    # Move all enemies
+    def move_enemies(self):
+        for enemy in self.entities['enemies']:
+            if self.tcod_map.fov[enemy.y, enemy.x]:
+                path = self.astar.get_path(enemy.y, enemy.x, self.player.y, self.player.x)
+                if path:
+                    move = (path[0][1] - enemy.x, path[0][0] - enemy.y)
+                    if self.check_move(move, enemy):
+                        enemy.move(move)
+                        self.update_cell(enemy)
 
 
 class Room:
