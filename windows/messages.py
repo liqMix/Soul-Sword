@@ -2,13 +2,6 @@ from windows.window import Frame
 from constants import *
 
 
-# Little utility function to return reversed list
-def reversed(init_list):
-    reversed_list = init_list
-    reversed_list.reverse()
-    return reversed_list
-
-
 # Manages output to the user of events
 class Messages(Frame):
     def __init__(self):
