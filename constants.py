@@ -1,8 +1,6 @@
 import tcod
 
 # Holds game-wide constants
-#   These will eventually be read from an external text file
-#
 
 # SYSTEM #
 SCREEN_WIDTH = 100
@@ -10,29 +8,49 @@ SCREEN_HEIGHT = 80
 
 
 # ITEMS #
-ITEMS = {"Potion": {"symbol": "P",
-                    'type': 'consumable',
-                    "desc": "Heals your health like you'd expect it to. (10%)"},
+ITEMS = {'Potion':  {'symbol': 'P',
+                     'type': 'consumable',
+                     'desc': 'Heals your health like you\'d expect it to. (10%)',
+                     'min': 1,
+                     'max': 10},
 
-         "Sword":  {"symbol": "|",
-                    'type': 'equip',
-                    "desc": "Wow cool! Nice. Careful!"},
+         'Sword':   {'symbol': '|',
+                     'type': 'equip',
+                     'desc': 'Wow cool! Nice. Careful!',
+                     'min': 1,
+                     'max': 3},
 
-         "Nothing":   {"symbol": "n",
-                       'type': 'consumable',
-                       "desc": "Truly one of a kind."}}
+         'Nothing': {'symbol': 'n',
+                     'type': 'consumable',
+                     'desc': 'Truly one of a kind.',
+                     'min': 1,
+                     'max': 2},
+
+         'Roster':  {'symbol': 'r',
+                     'type': 'usable',
+                     'desc': 'Contains a list of all enemies on this floor.',
+                     'min': 1,
+                     'max': 2},
+
+         'Stone':   {'symbol': 's',
+                     'type': 'resource',
+                     'desc': 'It\'s a rock.',
+                     'min': 1,
+                     'max': 20}
+         }
 
 
 # COLORS #
 COLORS = {'player':       tcod.amber,
           'enemy':        tcod.red,
           'consumable':   tcod.pink,
+          'usable':       tcod.green,
+          'resource':     tcod.purple,
           'equip':        tcod.blue,
           'dark_wall':    tcod.darker_gray,
           'dark_ground':  tcod.darker_gray,
           'light_wall':   tcod.light_gray,
-          'light_ground': tcod.light_gray,
-          }
+          'light_ground': tcod.light_gray,}
 
 # SYMBOLS #
 SYMBOLS = {'player':    '@',
@@ -56,6 +74,10 @@ HALLWAY = {'width': 3,
 # PLAYER #
 PLAYER = {'fov_radius': 5}
 
+# MESSAGE WINDOW #
+MESSAGES = {'width': int(SCREEN_WIDTH // 1.25),
+            'height': int(SCREEN_HEIGHT // 4),
+            'max_lines': 9}
 # UTILITY #
 
 
@@ -67,5 +89,6 @@ def idx_to_xy(idx, width):
     y = idx % width
     x = idx - y
     return (x, y)
+
 
 
