@@ -177,16 +177,16 @@ class GameMap:
     def populate(self):
         # add items
         for item in ITEMS.keys():
+            for i in range(random.randrange(ITEMS[item]['min'], ITEMS[item]['max'])):
+                idx = None
+                while idx is None or self.tiles[idx]['entity'].type is not 'ground':
+                    rand_x = math.floor(np.random.random() * self.width)
+                    rand_y = math.floor(np.random.random() * self.height)
+                    idx = xy_to_idx(rand_x, rand_y, self.width)
 
-            idx = None
-            while idx is None or self.tiles[idx]['entity'].type is not 'ground':
-                rand_x = math.floor(np.random.random() * self.width)
-                rand_y = math.floor(np.random.random() * self.height)
-                idx = xy_to_idx(rand_x, rand_y, self.width)
-
-            new_item = Item(item, (rand_x, rand_y))
-            self.tiles[idx]['items'].append(new_item)
-            self.entities['items'].append(new_item)
+                new_item = Item(item, (rand_x, rand_y))
+                self.tiles[idx]['items'].append(new_item)
+                self.entities['items'].append(new_item)
 
         # add enemies
         num_enemies = random.randrange(ROOM['min_enemies'], ROOM['max_enemies'])
