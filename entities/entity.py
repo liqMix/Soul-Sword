@@ -35,3 +35,5 @@ class Entity:
     def add_items(self, items):
         for item in items:
             self.inventory.append(item)
+            if self.controller:
+                self.controller.messages.add_message('Picked up ' + item.name + '!')

@@ -25,6 +25,6 @@ class Frame:
         self.center = center
         self.x, self.y = center
         self.width, self.height = size
-        self.size = self.width * self.width
+        self.size = self.width * self.height
         self.name = name
         self.history = []

@@ -2,6 +2,7 @@ import tcod.event
 from entities.player import *
 from windows.game_map import *
 from windows.stats import *
+from windows.messages import *
 from handlers.input_handlers import handle_keys
 from handlers.event_handlers import action_handler
 from controller import Controller
@@ -36,7 +37,8 @@ def main():
               SCREEN_HEIGHT // 2)
     window = Window(size=(SCREEN_WIDTH-5, SCREEN_HEIGHT-5))
 
-    controller = Controller()
+    messages = Messages()
+    controller = Controller(messages)
 
     map_width = 25
     map_height = 12
@@ -46,7 +48,9 @@ def main():
     stats = Stats(player)
 
     window.add_frame(stats)
+    window.add_frame(messages)
     window.add_frame(game_map)
+
 
     # Initializes console
     tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
