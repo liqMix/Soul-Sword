@@ -11,7 +11,7 @@ class MapWindow(Frame):
         super(MapWindow, self).__init__(center=center, name='gamemap')
 
         num_rooms = random.randrange(ROOM['min_rooms'], ROOM['max_rooms'])
-        self.map = GameMap(size_x=500, size_y=500, num_rooms=num_rooms, player=player)
+        self.map = GameMap(size_x=500, size_y=500, num_rooms=num_rooms, player=player, controller=player.controller)
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)

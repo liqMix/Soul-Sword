@@ -11,7 +11,9 @@ import math
 
 
 class GameMap:
-    def __init__(self, size_x, size_y, num_rooms, player):
+    def __init__(self, size_x, size_y, num_rooms, player, controller):
+        # Controller
+        self.controller = controller
         # Map dimensions
         self.width = size_x
         self.height = size_y
@@ -146,6 +148,7 @@ class GameMap:
         dest_x, dest_y = move
         dest_x = entity.x + dest_x
         dest_y = entity.y + dest_y
+        tile = self.tiles[xy_to_idx(dest_x, dest_y, self.width)]
 
         # Check bounds of map
         if (dest_x >= self.width) or (dest_x < 0):
@@ -154,7 +157,9 @@ class GameMap:
             return False
 
         # Check if currently occupied
-        elif self.tiles[xy_to_idx(dest_x, dest_y, self.width)]['blocked']:
+        elif tile['blocked']:
+            if tile['entity']:
+                self.controller.attack(entity, tile['entity'])
             return False
 
         # Find walkable path to destination

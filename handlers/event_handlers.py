@@ -6,6 +6,7 @@ from windows.infopane import *
 def action_handler(action, window, player, map_window):
     move = action.get('move')
     toggle = action.get('toggle')
+
     if move:
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
@@ -21,7 +22,7 @@ def action_handler(action, window, player, map_window):
                 top_frame.map.update_cell(player)
                 top_frame.map.compute_fov(player.pos)
                 top_frame.map.get_items(player)
-                top_frame.map.move_enemies()
+            top_frame.map.move_enemies()
             return True
 
     if toggle:
