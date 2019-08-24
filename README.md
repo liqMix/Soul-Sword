@@ -34,11 +34,6 @@ I plan to use this project to explore multiple systems that I do not have much e
 	- ...
  - HTML embedded as well as executable
 
-# API Access
-An API key is required in order to access the full database. One can be acquired from https://rapidapi.com/jailbase/api/jailbase
-The key should be placed in a text file:
-<pre>data/key.txt</pre>
-If the file does not exist, an alternative reduced-size keyless source will be used instead.
 
 # Disclaimer & Source
 All information used to seed entities are available as public records. 
@@ -54,9 +49,13 @@ This project is not affiliated in any capacity with Clackamas County.
 
 ## Jailbase API ## 
 **Due to discrepancies between county records, this source is currently not supported, please run without providing a API key**
+### API Access ###
+An API key is required in order to access the full database. One can be acquired from https://rapidapi.com/jailbase/api/jailbase
+The key should be placed in a text file:
+<pre>data/key.txt</pre>
+If the file does not exist, an alternative reduced-size keyless source will be used instead.
 
 This project is not affiliated with JailBase.com.
-
 
 Inmate data provided by JailBase.com
  
