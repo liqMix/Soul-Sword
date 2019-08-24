@@ -44,14 +44,14 @@ class MapWindow(Frame):
                             item = tile['items']
                             entity = tile['entity']
 
-                            if item:
-                                item[0].draw(con, rel_x + self.x, rel_y + self.y)
-
                             if entity.type is 'player':
                                 entity.draw(con, self.x, self.y)
                             else:
                                 if self.map.tcod_map.fov[y, x]:
-                                    entity.draw(con, rel_x + self.x, rel_y + self.y)
+                                    if entity.type is 'ground' and item:
+                                        item[0].draw(con, rel_x + self.x, rel_y + self.y)
+                                    else:
+                                        entity.draw(con, rel_x + self.x, rel_y + self.y)
                                 elif entity.type in ['ground', 'wall']:
                                     entity.draw_darker(con, rel_x + self.x, rel_y + self.y)
 
