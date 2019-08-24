@@ -44,6 +44,9 @@ class MapWindow(Frame):
                             item = tile['items']
                             entity = tile['entity']
 
+                            if item:
+                                item[0].draw(con, rel_x + self.x, rel_y + self.y)
+
                             if entity.type is 'player':
                                 entity.draw(con, self.x, self.y)
                             else:
@@ -51,9 +54,6 @@ class MapWindow(Frame):
                                     entity.draw(con, rel_x + self.x, rel_y + self.y)
                                 elif entity.type in ['ground', 'wall']:
                                     entity.draw_darker(con, rel_x + self.x, rel_y + self.y)
-
-                            if item:
-                                item[0].draw(con, rel_x + self.x, rel_y + self.y)
 
         # Draw border of map
         view_edge_symbol = ord('#')

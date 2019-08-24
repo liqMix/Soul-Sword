@@ -78,6 +78,13 @@ PLAYER = {'fov_radius': 5}
 MESSAGES = {'width': int(SCREEN_WIDTH // 1.25),
             'height': int(SCREEN_HEIGHT // 4),
             'max_lines': 9}
+
+# MUGSHOT #
+MUGSHOT = {'scale_factor': 0.05,
+           'intensity_correction': 1.75,
+           'width_correction': 5/4,
+           'x_pos': int(SCREEN_WIDTH // 1.75),
+           'y_pos': int(SCREEN_HEIGHT // 30)}
 # UTILITY #
 
 

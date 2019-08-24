@@ -2,7 +2,7 @@ import requests
 import random
 import json
 import time
-
+from .mugshot import Mugshot
 '''
  Data provided by JailBase.com
  
@@ -26,6 +26,8 @@ class InmateList:
             self.populate_inmates(num)
         else:
             self.alt_source_populate(num)
+
+        self.replace_names()
 
     def load_sources(self):
         # Online
@@ -111,6 +113,7 @@ class InmateList:
 
         return True
 
+    # Use an alternate source if API key is not found
     def alt_source_populate(self, num):
         response = requests.get("https://web3.clackamas.us/roster/extract/inmates")
         inmates = json.loads(response.text)['results']
@@ -118,7 +121,33 @@ class InmateList:
         for i in inmates[:num]:
             print(i)
             inmate = {'name':    i['name'],
-                      'mugshot': i['image'],
+                      'mugshot': Mugshot(i['image']),
                       'charges': i['charges'],
+                      'sex':     i['sex'],
                       'source':  ""}
             self.inmate_list.append(inmate)
+
+    # Replaces names of inmates
+    #   Makes two api calls, one for each sex
+    def replace_names(self):
+        num_inmates = len(self.inmate_list)
+
+        # Male names
+        payload = {'nameOptions': 'boy_names'}
+        response = requests.get('http://names.drycodes.com/' + str(num_inmates), params=payload)
+        male_names = json.loads(response.text)
+
+        # Female names
+        payload = {'nameOptions': 'girl_names'}
+        response = requests.get('http://names.drycodes.com/' + str(num_inmates), params=payload)
+        female_names = json.loads(response.text)
+
+        # Iterate through inmate list, replacing name
+        # with one from the list that matches the sex
+        for inmate in self.inmate_list:
+            if inmate['sex'] == 'Male':
+                name = male_names.pop()
+            else:
+                name = female_names.pop()
+
+            inmate['name'] = name.replace('_', ' ')

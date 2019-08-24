@@ -58,6 +58,8 @@ class InfoPane(Frame):
             offset += increment
 
             if entity.type is 'enemy':
+                entity.picture.draw(con)
+                '''
                 con.print(left_anchor, top_anchor + offset,
                           "Data provided by JailBase.com")
                 offset += increment
@@ -69,8 +71,7 @@ class InfoPane(Frame):
                 offset += increment
                 con.print(left_anchor, top_anchor + offset,
                           "Contact the appropriate governmental agency to verify.")
-                offset += increment
-                offset += increment
+                '''
 
         con.print(left_anchor, top_anchor + offset,
                   "Ground: ")
