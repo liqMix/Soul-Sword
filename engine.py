@@ -55,7 +55,7 @@ def main():
     # Initializes console
     tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     con_root = tcod.console_init_root(w=SCREEN_WIDTH, h=SCREEN_HEIGHT,
-                                 title='CorpseSword',
+                                 title='Soul Sword',
                                  vsync=False,
                                  renderer=tcod.RENDERER_SDL2)
     con = tcod.console.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
