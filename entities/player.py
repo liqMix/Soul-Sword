@@ -1,5 +1,6 @@
 from entities.entity import *
 from constants import *
+import numpy as np
 
 
 class Player(Entity):
@@ -9,6 +10,20 @@ class Player(Entity):
         self.color = COLORS['player']
         self.desc = "The player"
 
+        for key in self.stats.keys():
+            self.update_stat(key, 10)
+
+        self.current_hp = self.total_hp
+        self.view_history = None
+
     def move(self, move):
         super(Player, self).move(move)
         self.controller.increment_ticks(1)
+
+    def set_view(self, view):
+        self.view_history = view
+
+    def update_fov(self, tcod_map):
+        x, y = self.pos
+        tcod_map.compute_fov(x, y, self.view_radius, light_walls=True, algorithm=tcod.FOV_RESTRICTIVE)
+        self.view_history |= tcod_map.fov

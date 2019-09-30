@@ -17,12 +17,13 @@ def action_handler(action, window, player, map_window):
 
         elif name is 'gamemap':
             # Manipulate player's position on map
-            if top_frame.map.check_move(move, player):
+            game_map = top_frame.map
+            if game_map.check_move(move, player):
                 player.move(move)
-                top_frame.map.update_cell(player)
-                top_frame.map.compute_fov(player.pos)
-                top_frame.map.get_items(player)
-            top_frame.map.move_enemies()
+                game_map.update_cell(player)
+                game_map.get_items(player)
+            game_map.enemy_turns()
+            player.update_fov(game_map.tcod_map)
             return True
 
     if toggle:

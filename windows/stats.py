@@ -42,7 +42,7 @@ class Stats(Frame):
 
             # Draw life points
             con.print(left_anchor, top_anchor + offset,
-                      "Life: " + str(self.entity.hp))
+                      "Life: " + str(self.entity.current_hp) + " / " + str(self.entity.total_hp))
             offset += increment
 
             # Draw position

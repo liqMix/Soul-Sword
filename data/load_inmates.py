@@ -115,7 +115,7 @@ class InmateList:
 
     # Use an alternate source if API key is not found
     def alt_source_populate(self, num):
-        response = requests.get("https://web3.clackamas.us/roster/extract/inmates")
+        response = requests.get("https://web3.clackamas.us/roster/extract/inmates", verify=False)
         inmates = json.loads(response.text)['results']
 
         for i in inmates[:num]:

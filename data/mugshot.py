@@ -14,7 +14,7 @@ chars = np.asarray(list(' .,:;irsXA253hMHGS#9B&@'))
 
 
 def download_image(source, path):
-    response = requests.get(source)
+    response = requests.get(source, verify=False)
     path = path + '/' + source[-20:]
     if not os.path.exists(path):
         print(path)

@@ -57,6 +57,11 @@ class InfoPane(Frame):
                       "Level:  " + str(entity.level))
             offset += increment
 
+            # Draw HP
+            con.print(left_anchor, top_anchor + offset,
+                      "HP:  " + str(entity.current_hp) + ' / ' + str(entity.total_hp))
+            offset += increment
+
             if entity.type is 'enemy':
                 entity.picture.draw(con)
                 '''

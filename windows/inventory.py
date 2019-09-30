@@ -26,7 +26,7 @@ class Inventory(Frame):
                     con.print(left_anchor-2, top_anchor + offset,
                               ">")
                 con.print(left_anchor, top_anchor + offset,
-                          item.name + "  (" + item.symbol + ")")
+                          item.name + "  (" + item.symbol + ")", fg=item.color)
                 offset += increment
                 con.print(left_anchor+increment, top_anchor + offset,
                           item.desc)

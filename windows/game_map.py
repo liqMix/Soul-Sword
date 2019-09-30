@@ -37,7 +37,7 @@ class MapWindow(Frame):
                 for x in tile_x_range:
                     if 0 <= x < self.map.width:
                         idx = xy_to_idx(x, y, self.map.width)
-                        if self.map.viewed[y, x]:
+                        if player.view_history[y, x]:
                             rel_x = x - player.x
                             rel_y = y - player.y
                             tile = self.map.tiles[idx]

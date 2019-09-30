@@ -37,6 +37,7 @@ class GameMap:
             self.rooms.append(self.gen_room())
 
         self.astar = tcod.path.AStar(self.tcod_map.walkable)
+
         # Initialize player
         print('Setting player position...')
         self.player = player
@@ -48,15 +49,16 @@ class GameMap:
                          'blocked': True}
 
         print('Generating initial view...')
-        self.viewed = np.ndarray((self.width, self.height), dtype=bool)
-        self.viewed[:] = False
-        self.compute_fov(self.player.pos)
+        viewed = np.ndarray((self.width, self.height), dtype=bool)
+        viewed[:] = False
+        self.player.set_view(viewed)
 
         print('Populating rooms with items...')
         self.populate()
+        self.player.update_fov(self.tcod_map)
 
     def gen_room(self):
-        # If first room, set it at the
+        # If first room, set it at the center
         if not self.rooms:
             min_d = ROOM['min_dim']
             max_d = ROOM['max_dim']
@@ -206,6 +208,7 @@ class GameMap:
 
             new_enemy = Enemy(inmate=enemy)
             new_enemy.set_pos((rand_x, rand_y))
+            new_enemy.update_fov(self.tcod_map)
             self.entities['enemies'].append(new_enemy)
             self.tiles[idx]['entity'] = new_enemy
             self.tiles[idx]['blocked'] = True
@@ -220,24 +223,22 @@ class GameMap:
         new_tile['entity'] = entity
         new_tile['blocked'] = True
 
-    # Adds viewable cells to viewed history
-    # and sets fov cells
-    def compute_fov(self, pos):
-        x, y = pos
-        radius = PLAYER['fov_radius']
-        self.tcod_map.compute_fov(x, y, radius, light_walls=True, algorithm=tcod.FOV_RESTRICTIVE)
-        self.viewed |= self.tcod_map.fov
-
     # Move all enemies
-    def move_enemies(self):
+    def enemy_turns(self):
         for enemy in self.entities['enemies']:
-            if self.tcod_map.fov[enemy.y, enemy.x]:
-                path = self.astar.get_path(enemy.y, enemy.x, self.player.y, self.player.x)
-                if path:
-                    move = (path[0][1] - enemy.x, path[0][0] - enemy.y)
-                    if self.check_move(move, enemy):
-                        enemy.move(move)
-                        self.update_cell(enemy)
+            if enemy.current_hp > 0:
+                enemy.turn(self)
+                self.update_cell(enemy)
+            else:
+                idx = xy_to_idx(enemy.x, enemy.y, self.width)
+                tile = self.tiles[idx]
+                for item in enemy.inventory:
+                    self.entities['items'].append(item)
+                    tile['items'].append(item)
+                tile['entity'] = Ground((enemy.x, enemy.y))
+                tile['blocked'] = False
+                self.entities['enemies'].remove(enemy)
+
 
 
 class Room:
