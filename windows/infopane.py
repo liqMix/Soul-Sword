@@ -49,7 +49,7 @@ class InfoPane(Frame):
         if entity:
             # Draw name
             con.print(left_anchor, top_anchor + offset,
-                      "Name: " + str(entity.name))
+                      "Name: " + str(entity.name), fg=entity.color)
             offset += increment
 
             # Draw Level
@@ -63,6 +63,14 @@ class InfoPane(Frame):
             offset += increment
 
             if entity.type is 'enemy':
+                con.print(left_anchor, top_anchor + offset, "Charges:  ")
+                offset += increment
+                for c in entity.charges[:5]:
+                    con.print(left_anchor + increment, top_anchor + offset, c)
+                    offset += increment
+                if len(entity.charges) > 5:
+                    con.print(left_anchor + increment, top_anchor + offset, '...')
+                    offset += increment
                 entity.picture.draw(con)
                 '''
                 con.print(left_anchor, top_anchor + offset,
@@ -84,11 +92,12 @@ class InfoPane(Frame):
 
         if items:
             for i in items:
+                # Draw item name
                 con.print(left_anchor+increment, top_anchor + offset,
-                          str(i.name))
+                          str(i.name), fg=i.color)
                 offset += increment
 
-                # Draw description
+                # Draw item description
                 con.print(left_anchor+(increment*2), top_anchor + offset,
                           str(i.desc))
                 offset += increment

@@ -122,7 +122,7 @@ class InmateList:
             print(i)
             inmate = {'name':    i['name'],
                       'mugshot': Mugshot(i['image']),
-                      'charges': i['charges'],
+                      'charges': [c['charge'][14:].lstrip().lstrip('-').lstrip() for c in i['charges']],
                       'sex':     i['sex'],
                       'source':  ""}
             self.inmate_list.append(inmate)

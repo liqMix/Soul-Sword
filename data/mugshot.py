@@ -53,7 +53,10 @@ class Mugshot:
         if source == 'style/img/male.jpg' or source == 'style/img/female.jpg':
             self.image = process_image('./data/default.png', temp=False)
         else:
-            self.image = process_image(download_image(source, path))
+            try:
+                self.image = process_image(download_image(source, path))
+            except OSError:
+                self.image = process_image('./data/default.png', temp=False)
 
     def draw(self, con):
         offset = 0
