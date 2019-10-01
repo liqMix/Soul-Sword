@@ -1,6 +1,7 @@
 import tcod.map
 import tcod.path
 import tcod.random
+from constants import COLORS
 from game_map.map import *
 from entities.enemies import *
 from windows.window import *
@@ -54,6 +55,12 @@ class MapWindow(Frame):
                                         entity.draw(con, rel_x + self.x, rel_y + self.y)
                                 elif entity.type in ['ground', 'wall']:
                                     entity.draw_darker(con, rel_x + self.x, rel_y + self.y)
+                                else:
+                                    tcod.console_put_char_ex(con,
+                                                             rel_x + self.x,
+                                                             rel_y + self.y,
+                                                             '.',
+                                                             fore=COLORS['dark_ground'], back=con.default_bg)
 
         # Draw border of map
         view_edge_symbol = ord('#')
