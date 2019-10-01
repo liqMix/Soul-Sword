@@ -6,12 +6,12 @@ from windows.infopane import *
 def action_handler(action, window, player, map_window):
     move = action.get('move')
     toggle = action.get('toggle')
-
+    use = action.get('use')
     if move:
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
         name = top_frame.name
-        if name in ['inventory', 'info_pane']:
+        if name in ['inventory', 'info_pane', 'title']:
             # Manipulate window
             top_frame.select(move)
 
@@ -25,6 +25,17 @@ def action_handler(action, window, player, map_window):
             game_map.enemy_turns()
             player.update_fov(game_map.tcod_map)
             return True
+
+    if use:
+        # Get top window
+        top_frame = window.frames[window.frames_ordered[-1]]
+        name = top_frame.name
+        if name is 'title':
+            selection = top_frame.selection
+            if selection == 'New Game':
+                window.remove_frame('title')
+            elif selection is 'Exit':
+                raise SystemExit()
 
     if toggle:
         # Toggle off

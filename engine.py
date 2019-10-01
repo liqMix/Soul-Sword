@@ -3,6 +3,7 @@ from entities.player import *
 from windows.game_map import *
 from windows.stats import *
 from windows.messages import *
+from windows.title_screen import *
 from handlers.input_handlers import handle_keys
 from handlers.event_handlers import action_handler
 from controller import Controller
@@ -40,9 +41,6 @@ def main():
     messages = Messages()
     controller = Controller(messages)
 
-    map_width = 25
-    map_height = 12
-
     player = Player(controller=controller)
     game_map = MapWindow(center, player=player)
     stats = Stats(player)
@@ -50,7 +48,7 @@ def main():
     window.add_frame(stats)
     window.add_frame(messages)
     window.add_frame(game_map)
-
+    window.add_frame(Title(center, size=(SCREEN_WIDTH, SCREEN_HEIGHT)))
 
     # Initializes console
     tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)

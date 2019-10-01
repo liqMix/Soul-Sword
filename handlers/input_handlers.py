@@ -54,7 +54,8 @@ def handle_keys(key):
         return {'toggle': 'inventory'}
     if symbol is keys.K_f:
         return {'toggle': 'info_pane'}
-
+    if symbol in [keys.K_KP_5, keys.SCANCODE_KP_ENTER]:
+        return {'use': True}
     # System
     if symbol == keys.K_ESCAPE:
         return {'exit': True}
