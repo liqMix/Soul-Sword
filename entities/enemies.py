@@ -1,6 +1,7 @@
 from entities.entity import *
 from entities.item import Soul
 from constants import *
+from itertools import permutations
 import random as rand
 
 
@@ -33,18 +34,33 @@ class Enemy(Entity):
         player_x, player_y = map.player.pos
         self.update_fov(map.tcod_map)
         if self.view[player_y, player_x]:
-            if self.current_hp / self.total_hp >= 0.10:
-                self.move_towards_player(map)
+            if self.current_hp / self.total_hp >= 0.25:
+                self.move_rel_player(map, 'towards')
+            else:
+                self.move_rel_player(map, 'away')
         else:
             move = (rand.choice([-1, 0, 1]), rand.choice([-1, 0, 1]))
             if map.check_move(move, self):
                 self.move(move)
 
-    def move_towards_player(self, map):
+    def move_rel_player(self, map, direction):
         path = map.astar.get_path(self.y, self.x, map.player.y, map.player.x)
         if path:
             move = (path[0][1] - self.x, path[0][0] - self.y)
-            if map.check_move(move, self):
+            if direction is 'towards':
+                if map.check_move(move, self):
+                    self.move(move)
+            else:
+                # move in random direction that is not towards player
+                possible_moves = list(permutations([-1, 0, 1], 2))
+                if move in possible_moves:
+                    possible_moves.remove(move)
+                rand.shuffle(possible_moves)
+                move = possible_moves.pop()
+                while not map.check_move(move, self):
+                    if not possible_moves:
+                        return
+                    move = possible_moves.pop()
                 self.move(move)
 
     def move(self, move):
