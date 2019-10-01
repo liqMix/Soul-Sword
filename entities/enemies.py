@@ -12,7 +12,7 @@ class Enemy(Entity):
 
         self.picture = inmate['mugshot']
         self.charges = inmate['charges']
-        self.level = (len(self.charges) // 2) + 1
+        self.level = (len(self.charges) // 2)
 
         for key in self.stats:
             self.update_stat(key, self.level)
