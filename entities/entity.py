@@ -15,6 +15,7 @@ class Entity:
         self.weapon = "None"
         self.inventory = []
         self.stats = {'str': 0,
+                      'int': 0,
                       'con': 0,
                       'def': 0,
                       'agi': 0}
@@ -53,7 +54,7 @@ class Entity:
         for item in items:
             self.inventory.append(item)
             if self.controller:
-                self.controller.messages.add_message('Picked up ' + item.name + '!')
+                self.controller.messages.add_message('Picked up ' + item.name + '!', item.color)
 
     def update_fov(self, tcod_map):
         x, y = self.pos
