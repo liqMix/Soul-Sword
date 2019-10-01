@@ -54,8 +54,10 @@ class Mugshot:
             self.image = process_image('./data/default.png', temp=False)
         else:
             try:
-                self.image = process_image(download_image(source, path))
+                img_path = download_image(source, path)
+                self.image = process_image(img_path)
             except OSError:
+                delete_image(img_path)
                 self.image = process_image('./data/default.png', temp=False)
 
     def draw(self, con):
