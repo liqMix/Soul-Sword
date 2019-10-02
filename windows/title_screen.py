@@ -1,6 +1,7 @@
 from windows.frame import Frame
 import math
 
+
 class Title(Frame):
     def __init__(self, center=(0, 0), size=(0, 0)):
         x, y = center
