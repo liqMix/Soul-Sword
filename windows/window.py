@@ -48,6 +48,7 @@ class Window:
         self.game_map = MapWindow(self.center, player=player)
         self.stats = Stats(player)
         self.remove_frame('loading')
+        self.controller.stop_audio()
         self.add_frame(self.stats)
         self.add_frame(self.controller.messages)
         self.add_frame(self.game_map)

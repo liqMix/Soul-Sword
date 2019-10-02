@@ -39,7 +39,6 @@ def action_handler(action, window):
             if selection == 'New Game':
                 window.remove_frame('title')
                 window.new_game()
-                controller.stop_audio()
             elif selection is 'Exit':
                 controller.stop_audio()
                 raise SystemExit()
