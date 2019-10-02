@@ -1,4 +1,4 @@
-from windows.window import Frame
+from windows.frame import Frame
 from constants import *
 
 

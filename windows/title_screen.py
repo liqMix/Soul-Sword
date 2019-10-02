@@ -1,11 +1,12 @@
-from windows.window import Frame
+from windows.frame import Frame
+import math
 
 class Title(Frame):
-    def __init__(self, anchor=(0, 0), size=(0,0)):
-        x, y = anchor
+    def __init__(self, center=(0, 0), size=(0, 0)):
+        x, y = center
         x = x // 5
-        y = y // 5
-        super(Title, self).__init__(center=(x,y), size=size, name='title')
+        y = math.floor(y // 2.5)
+        super(Title, self).__init__(center=(x, y), size=size, name='title')
         self.selections = ['New Game', 'Exit']
         self.selection = 'New Game'
         self.title_text = []

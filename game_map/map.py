@@ -14,6 +14,9 @@ class GameMap:
     def __init__(self, size_x, size_y, num_rooms, player, controller):
         # Controller
         self.controller = controller
+        loading = controller.loading
+        loading.update(0, 'Generating map...')
+
         # Map dimensions
         self.width = size_x
         self.height = size_y
@@ -32,13 +35,16 @@ class GameMap:
         self.rooms = []
         self.hallways = []
         self.origin = (0, 0) # Origin is set when first room is generated
+
         for i in range(num_rooms):
             print("Generating room: ", i)
+            loading.update((i // num_rooms) // 2)
             self.rooms.append(self.gen_room())
 
         self.astar = tcod.path.AStar(self.tcod_map.walkable)
 
         # Initialize player
+        loading.update(status='Setting player position...')
         print('Setting player position...')
         self.player = player
         self.player.set_pos(self.origin)
@@ -48,11 +54,13 @@ class GameMap:
                          'enemies': [],
                          'blocked': True}
 
+        loading.update(status='Generating view...')
         print('Generating initial view...')
         viewed = np.ndarray((self.width, self.height), dtype=bool)
         viewed[:] = False
         self.player.set_view(viewed)
 
+        loading.update(0.75, status='Populating rooms...')
         print('Populating rooms with items...')
         self.populate()
         self.player.update_fov(self.tcod_map)

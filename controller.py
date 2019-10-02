@@ -1,14 +1,19 @@
 from constants import *
+from windows.messages import Messages
+from entities.player import *
 import random as rand
 import simpleaudio as sa
 import threading
 
+
 class Controller:
-    def __init__(self, messages):
+    def __init__(self):
         self.ticks = 0
         self.entities = []
-        self.messages = messages
+        self.messages = Messages()
         self.audio_tracks = []
+        self.player = Player(controller=self)
+        self.loading = None
 
     def play_audio(self, source, loop=False):
         wave_object = sa.WaveObject.from_wave_file(source)

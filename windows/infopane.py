@@ -1,12 +1,13 @@
-from windows.window import Frame
+from windows.frame import Frame
 from entities.entity import Entity
 import tcod
+from constants import xy_to_idx
 
 
 class InfoPane(Frame):
     def __init__(self, init_pos=(0, 0), anchor=(0, 0), game_map=None):
         super(InfoPane, self).__init__(center=anchor, name='info_pane')
-        self.entity = Entity((game_map.x, game_map.y), name='selector', symbol='*', color=tcod.yellow)
+        self.entity = Entity((game_map.map.player.x, game_map.map.player.y), name='selector', symbol='*', color=tcod.yellow)
         self.game_map = game_map
         self.selection = {'entity': game_map.map.player, 'items': []}
 
@@ -14,15 +15,17 @@ class InfoPane(Frame):
         if not move:
             return
 
+        game_map = self.game_map
         dx, dy = move
         dx = self.entity.x + dx
         dy = self.entity.y + dy
 
-        if (self.game_map.top_left_x < dx < self.game_map.top_left_x + self.game_map.view_x) and \
-           (self.game_map.top_left_y < dy < self.game_map.top_left_y + self.game_map.view_y):
-            self.entity.move(move)
+        if not self.game_map.map.player.view[dy, dx]:
+            return
 
-        self.selection = self.game_map.get_cell_from_abs(self.entity.pos)
+        self.entity.move(move)
+        print(self.entity.pos)
+        self.selection = game_map.map.tiles[xy_to_idx(self.entity.x, self.entity.y, game_map.map.width)]
 
     def draw(self, con):
         self.draw_infopane(con)
@@ -33,7 +36,9 @@ class InfoPane(Frame):
         else:
             self.entity.symbol = '*'
 
-        self.entity.draw(con, self.entity.x, self.entity.y)
+        self.entity.draw(con,
+                         self.entity.x - self.game_map.map.player.x + self.game_map.x,
+                         self.entity.y - self.game_map.map.player.y + self.game_map.y)
 
     def draw_infopane(self, con):
         if not self.selection:

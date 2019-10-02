@@ -1,6 +1,5 @@
 from entities.entity import *
 from constants import *
-import numpy as np
 
 
 class Player(Entity):
@@ -26,4 +25,5 @@ class Player(Entity):
     def update_fov(self, tcod_map):
         x, y = self.pos
         tcod_map.compute_fov(x, y, self.view_radius, light_walls=True, algorithm=tcod.FOV_RESTRICTIVE)
-        self.view_history |= tcod_map.fov
+        self.view = tcod_map.fov
+        self.view_history |= self.view

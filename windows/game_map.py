@@ -4,7 +4,7 @@ import tcod.random
 from constants import COLORS
 from game_map.map import *
 from entities.enemies import *
-from windows.window import *
+from windows.frame import Frame
 
 
 class MapWindow(Frame):
@@ -12,7 +12,11 @@ class MapWindow(Frame):
         super(MapWindow, self).__init__(center=center, name='gamemap')
 
         num_rooms = random.randrange(ROOM['min_rooms'], ROOM['max_rooms'])
-        self.map = GameMap(size_x=500, size_y=500, num_rooms=num_rooms, player=player, controller=player.controller)
+        self.map = GameMap(size_x=GAMEMAP['size_x'],
+                           size_y=GAMEMAP['size_y'],
+                           num_rooms=num_rooms,
+                           player=player,
+                           controller=player.controller)
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)
@@ -48,7 +52,7 @@ class MapWindow(Frame):
                             if entity.type is 'player':
                                 entity.draw(con, self.x, self.y)
                             else:
-                                if self.map.tcod_map.fov[y, x]:
+                                if player.view[y, x]:
                                     if entity.type is 'ground' and item:
                                         item[0].draw(con, rel_x + self.x, rel_y + self.y)
                                     else:
@@ -78,5 +82,4 @@ class MapWindow(Frame):
         rel_y = y - self.y + self.map.player.y
         idx = xy_to_idx(rel_x, rel_y, self.map.width)
         tile = self.map.tiles[idx]
-        print(tile)
         return tile

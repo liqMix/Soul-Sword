@@ -1,11 +1,11 @@
-from windows.window import *
+from windows.frame import Frame
 
 
 # The inventory window listing all the player's items,
 # their symbols, and their descriptions
 class Inventory(Frame):
-    def __init__(self, entity, anchor=(0, 0), size=(0, 0)):
-        super(Inventory, self).__init__(anchor, name='inventory')
+    def __init__(self, entity, center=(0, 0), size=(0, 0)):
+        super(Inventory, self).__init__(center, name='inventory')
         self.width, self.height = size
         self.entity = entity
         self.selection = None
@@ -18,6 +18,7 @@ class Inventory(Frame):
                        fg=(255, 255, 255),
                        bg=(0, 0, 0),
                        bg_blend=0)
+
         top_anchor = self.y
         left_anchor = self.x + 4
         if self.entity.inventory is not []:

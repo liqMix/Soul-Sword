@@ -1,4 +1,4 @@
-from windows.window import *
+from windows.frame import Frame
 
 
 # Stats window containing player details

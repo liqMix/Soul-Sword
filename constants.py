@@ -64,6 +64,11 @@ SYMBOLS = {'player':    '@',
            'ground':    '.',
            'enemy':     'E',
            'item':      ''}
+
+# GAME MAP #
+GAMEMAP = {'size_x': 500,
+           'size_y': 500}
+
 # ROOMS #
 ROOM = {'min_rooms': 25,
         'max_rooms': 40,
