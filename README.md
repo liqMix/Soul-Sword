@@ -7,6 +7,7 @@ https://www.reddit.com/r/roguelikedev/
 	requests - https://pypi.org/project/requests/
 	numpy - https://pypi.org/project/numpy/
 	Pillow - https://pypi.org/project/Pillow/2.2.1/
+	simpleaudio - https://pypi.org/project/simpleaudio/
 	
 # Description
 I plan to use this project to explore multiple systems that I do not have much experience in.
