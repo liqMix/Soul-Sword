@@ -10,6 +10,8 @@ class Title(Frame):
         self.selection = 'New Game'
         self.title_text = []
         self.title_sword = []
+        self.audio_source = 'resources/audio/title.wav'
+
         with open('resources/title.txt') as f:
             for line in f:
                 self.title_text.append(line)
@@ -17,9 +19,6 @@ class Title(Frame):
         with open('resources/title_sword.txt') as f:
             for line in f:
                 self.title_sword.append(line)
-
-
-
 
     def draw(self, con):
         con.draw_frame(0, 0, self.width, self.height,

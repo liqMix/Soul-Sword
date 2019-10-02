@@ -3,10 +3,11 @@ from windows.game_map import *
 from windows.infopane import *
 
 
-def action_handler(action, window, player, map_window):
+def action_handler(action, window, player, map_window, controller):
     move = action.get('move')
     toggle = action.get('toggle')
     use = action.get('use')
+    controller.clear_audio()
     if move:
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
@@ -34,6 +35,7 @@ def action_handler(action, window, player, map_window):
             selection = top_frame.selection
             if selection == 'New Game':
                 window.remove_frame('title')
+                controller.stop_audio()
             elif selection is 'Exit':
                 raise SystemExit()
 

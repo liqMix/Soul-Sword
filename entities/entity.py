@@ -25,7 +25,7 @@ class Entity:
         self.view = None
         self.view_radius = 0
 
-        self.weapon = 'Fists'
+        self.weapon = 'fists'
 
     def update_stat(self, stat, change):
         self.stats[stat] += change

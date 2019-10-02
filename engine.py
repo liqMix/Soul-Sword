@@ -25,7 +25,7 @@ def main():
             if fullscreen:
                 tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
-            action_handler(action, window, player, game_map)
+            action_handler(action, window, player, game_map, controller)
 
         def ev_mousebuttondown(self, event):
             pass
@@ -40,7 +40,6 @@ def main():
 
     messages = Messages()
     controller = Controller(messages)
-
     player = Player(controller=controller)
     game_map = MapWindow(center, player=player)
     stats = Stats(player)
@@ -49,7 +48,7 @@ def main():
     window.add_frame(messages)
     window.add_frame(game_map)
     window.add_frame(Title(center, size=(SCREEN_WIDTH, SCREEN_HEIGHT)))
-
+    controller.play_audio(window.frames['title'].audio_source, loop=True)
     # Initializes console
     tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     con_root = tcod.console_init_root(w=SCREEN_WIDTH, h=SCREEN_HEIGHT,
