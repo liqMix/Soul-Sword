@@ -21,6 +21,11 @@ I plan to use this project to explore multiple systems that I do not have much e
  - Mugshot -> ASCII generation
  - Message box for communicating events
  
+# Screenshots
+## Title Screen
+![Title Screen](https://liqmix.github.io/title-16a04199.jpg)
+## In-Game
+![In-Game with Enemy Selected](https://liqmix.github.io/game-62d6ddd3.jpg)
 # Future Goals
  - Unique weapon upgrade system
 	- All items (including corpses) have inherent stats
