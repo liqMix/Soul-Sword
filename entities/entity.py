@@ -31,6 +31,8 @@ class Entity:
         self.stats[stat] += change
         if stat == 'con':
             self.total_hp = self.stats[stat] * 10
+            if self.total_hp == 0:
+                self.total_hp = 10
         elif stat == 'int':
             self.view_radius = (self.stats[stat] // 5) + 2
 
