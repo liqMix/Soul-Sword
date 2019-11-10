@@ -63,6 +63,8 @@ def action_handler(action, window):
                 return True
 
             if toggle is 'info_pane':
+                if 'gamemap' not in window.frames:
+                    return False
                 if 'inventory' not in window.frames:
                     init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
                     anchor = (SCREEN_WIDTH//4, 0)
