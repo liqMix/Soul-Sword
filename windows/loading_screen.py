@@ -1,6 +1,8 @@
 from windows.frame import Frame
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 import math
+
+
 class Loading(Frame):
     def __init__(self, center=(0, 0)):
         super(Loading, self).__init__(center,
@@ -12,7 +14,6 @@ class Loading(Frame):
         self.status = ''
 
     def draw(self, con):
-
         con.draw_frame(self.x, self.y, self.width//2, self.height//12,
                        'Loading...',
                        fg=(255, 255, 255),
