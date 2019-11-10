@@ -17,7 +17,6 @@ def download_image(source, path):
     response = requests.get(source, verify=False)
     path = path + '/' + source[-20:]
     if not os.path.exists(path):
-        print(path)
         with open(path, mode='xb') as f:
             f.write(response.content)
     return path
@@ -49,7 +48,6 @@ class Mugshot:
         path = './data/temp'
         if not os.path.isdir(path):
             os.mkdir(path)
-        print(source)
         if source == 'style/img/male.jpg' or source == 'style/img/female.jpg':
             self.image = process_image('./data/default.png', temp=False)
         else:

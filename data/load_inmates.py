@@ -3,6 +3,8 @@ import random
 import json
 import time
 from .mugshot import Mugshot
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 '''
  Data provided by JailBase.com
  
@@ -78,7 +80,6 @@ class InmateList:
                                   'charges': response['charges'],
                                   'source':  response['more_info_url']}
 
-                        print(inmate)
                         self.inmate_list.append(inmate)
                         count += 1
 
@@ -119,7 +120,6 @@ class InmateList:
         inmates = json.loads(response.text)['results']
 
         for i in inmates[:num]:
-            print(i)
             inmate = {'name':    i['name'],
                       'mugshot': Mugshot(i['image']),
                       'charges': [c['charge'][14:].lstrip().lstrip('-').lstrip() for c in i['charges']],
