@@ -13,6 +13,8 @@ def main():
             raise SystemExit()
 
         def ev_keydown(self, event):
+            if not event:
+                return
             action = handle_keys(event)
             exit = action.get('exit')
             fullscreen = action.get('fullscreen')
@@ -59,7 +61,7 @@ def main():
         con.blit(con_root)
 
         # Handle events
-        for event in tcod.event.wait():
+        for event in tcod.event.wait(timeout=1):
             state.dispatch(event)
 
 
