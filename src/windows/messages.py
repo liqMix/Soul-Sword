@@ -5,9 +5,11 @@ from constants import *
 # Manages output to the user of events
 class Messages(Frame):
     def __init__(self):
+        width = int(SCREEN_WIDTH // 1.25)
+        height = int(SCREEN_HEIGHT // 4)
         super(Messages, self).__init__(center=(int(SCREEN_WIDTH//9),
                                                int(SCREEN_HEIGHT - SCREEN_HEIGHT//3.25)),
-                                       size=(MESSAGES['width'], MESSAGES['height']),
+                                       size=(width, height),
                                        name='Messages')
         self.lines = []
 

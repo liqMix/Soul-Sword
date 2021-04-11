@@ -1,4 +1,4 @@
-from constants import MUGSHOT
+from constants import MUGSHOT, SCREEN_WIDTH, SCREEN_HEIGHT
 import requests
 import os
 from PIL import Image
@@ -7,8 +7,8 @@ import numpy as np
 scale_factor = MUGSHOT['scale_factor']
 intensity_correction = MUGSHOT['intensity_correction']
 width_correction = MUGSHOT['width_correction']
-x_pos = MUGSHOT['x_pos']
-y_pos = MUGSHOT['y_pos']
+x_pos = int(SCREEN_WIDTH // 1.75)
+y_pos = int(SCREEN_HEIGHT // 30)
 chars = np.asarray(list(' .,:;irsXA253hMHGS#9B&@'))
 
 
@@ -51,6 +51,7 @@ class Mugshot:
         if source == 'style/img/male.jpg' or source == 'style/img/female.jpg':
             self.image = process_image('./api/default.png', temp=False)
         else:
+            img_path = None
             try:
                 img_path = download_image(source, path)
                 self.image = process_image(img_path)

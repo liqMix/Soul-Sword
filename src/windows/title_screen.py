@@ -1,13 +1,16 @@
 from windows.frame import Frame
-import math
+
+
+def get_adj_center(center_pos, obj_pos):
+    val = int(center_pos - (obj_pos//2)) + 1
+    if val < 0:
+        return 0
+    return val
 
 
 class Title(Frame):
     def __init__(self, center=(0, 0), size=(0, 0)):
-        x, y = center
-        x = x // 5
-        y = math.floor(y // 2.5)
-        super(Title, self).__init__(center=(x, y), size=size, name='title')
+        super(Title, self).__init__(center=center, size=size, name='title')
         self.selections = ['New Game', 'Exit']
         self.selection = 'New Game'
         self.title_text = []
@@ -49,15 +52,22 @@ class Title(Frame):
             return
 
     def draw_title(self, con):
-        init_x, init_y = self.center
+        center_x, center_y = self.center
+        text_width = len(self.title_text[0])
+        init_x = get_adj_center(center_x, text_width)
+        init_y = 0
         offset = 0
         increment = 1
+
         for line in self.title_text:
             con.print(init_x, init_y + offset, line)
             offset += increment
 
-        init_x = init_x * 4
-        offset += increment * 3
+        sword_height = len(self.title_sword)
+        sword_width = len(self.title_sword[0])
+        init_x = get_adj_center(center_x, sword_width)
+        init_y = get_adj_center(center_y, sword_height)
+        offset = 0
         for line in self.title_sword:
             con.print(init_x, init_y + offset, line)
             offset += increment
@@ -65,10 +75,11 @@ class Title(Frame):
         return offset
 
     def draw_selections(self, con, offset):
-        init_x, init_y = self.center
-        init_x = int(init_x * 4.5)
+        center_x, center_y = self.center
+        width = max([len(s) for s in self.selections])
+        init_x = get_adj_center(center_x, width)
+        init_y = offset
         increment = 1
-        init_y += increment * 5
 
         for s in self.selections:
             if self.selection is s:
