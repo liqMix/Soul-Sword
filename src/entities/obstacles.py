@@ -1,6 +1,5 @@
-from entities.entity import Entity
-from constants import COLORS, SYMBOLS
-import tcod
+from src.entities.entity import Entity
+from src.constants import COLORS, SYMBOLS
 
 
 class Wall(Entity):

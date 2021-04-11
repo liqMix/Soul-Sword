@@ -1,5 +1,5 @@
-from windows.frame import Frame
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.windows.frame import Frame
+from src.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 import math
 
 

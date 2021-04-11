@@ -1,8 +1,8 @@
 import tcod.event
-from constants import *
-from windows.window import Window
-from handlers.input_handlers import handle_keys
-from handlers.event_handlers import action_handler
+from src.constants import *
+from src.windows.window import Window
+from src.handlers.input_handlers import handle_keys
+from src.handlers.event_handlers import action_handler
 
 
 def main():

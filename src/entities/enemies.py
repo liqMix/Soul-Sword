@@ -1,6 +1,6 @@
-from entities.entity import *
-from entities.item import Soul
-from constants import *
+from src.entities.entity import *
+from src.entities.item import Soul
+from src.constants import *
 from itertools import permutations
 import random as rand
 

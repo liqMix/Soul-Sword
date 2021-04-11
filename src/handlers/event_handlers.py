@@ -1,6 +1,5 @@
-from windows.inventory import *
-from windows.game_map import *
-from windows.infopane import *
+from src.windows.inventory import *
+from src.windows.infopane import *
 
 
 def action_handler(action, window):

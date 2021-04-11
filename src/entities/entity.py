@@ -1,5 +1,5 @@
 import tcod
-from constants import *
+
 
 class Entity:
     def __init__(self, pos=(0, 0), name=None, symbol=' ', controller=None, color=tcod.white):

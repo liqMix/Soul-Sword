@@ -1,4 +1,4 @@
-from windows.frame import Frame
+from src.windows.frame import Frame
 import math
 
 

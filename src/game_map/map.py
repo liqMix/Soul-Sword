@@ -1,8 +1,8 @@
-from data.load_inmates import InmateList
-from entities.enemies import *
-from entities.obstacles import *
-from entities.item import *
-from constants import *
+from src.data.load_inmates import InmateList
+from src.entities.enemies import *
+from src.entities.obstacles import *
+from src.entities.item import *
+from src.constants import *
 import tcod.map
 import tcod.path
 import random

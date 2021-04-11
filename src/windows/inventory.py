@@ -1,4 +1,4 @@
-from windows.frame import Frame
+from src.windows.frame import Frame
 
 
 # The inventory window listing all the player's items,

@@ -1,9 +1,9 @@
-from controller import Controller
-from windows.game_map import MapWindow
-from windows.stats import Stats
-from windows.title_screen import Title
-from windows.loading_screen import Loading
-from constants import *
+from src.controller import Controller
+from src.windows.game_map import MapWindow
+from src.windows.stats import Stats
+from src.windows.title_screen import Title
+from src.windows.loading_screen import Loading
+from src.constants import *
 import threading
 
 

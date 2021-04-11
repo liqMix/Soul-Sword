@@ -1,5 +1,5 @@
-from entities.entity import *
-from constants import *
+from src.entities.entity import *
+from src.constants import *
 
 
 class Item(Entity):

@@ -1,5 +1,5 @@
 
-from constants import MUGSHOT
+from src.constants import MUGSHOT
 import requests
 import os
 from PIL import Image

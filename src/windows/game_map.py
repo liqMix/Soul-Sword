@@ -1,10 +1,8 @@
 import tcod.map
 import tcod.path
 import tcod.random
-from constants import COLORS
-from game_map.map import *
-from entities.enemies import *
-from windows.frame import Frame
+from src.game_map.map import *
+from src.windows.frame import Frame
 
 
 class MapWindow(Frame):
