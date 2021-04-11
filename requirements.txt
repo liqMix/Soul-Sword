@@ -1,0 +1,4 @@
+tcod==12.2.0
+simpleaudio==1.0.4
+requests==2.25.1
+pillow==8.2.0
