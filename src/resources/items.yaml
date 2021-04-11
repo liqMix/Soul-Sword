@@ -1,14 +1,14 @@
 Potion:
-  symbol: P
+  symbol: 'P'
   type: consumable
   desc: Heals your health like you'd expect it to.
-  min: 1
+  min: 3
   max: 10
   stats:
     int: 1
 
 Sword:
-  symbol: \|
+  symbol: '|'
   type: equip
   desc: Wow cool! Nice. Careful!
   min: 1
@@ -17,7 +17,7 @@ Sword:
     str: 1
 
 Nothing:
-  symbol: n
+  symbol: 'n'
   type: consumable
   desc: Truly one of a kind.
   min: 1
@@ -25,7 +25,7 @@ Nothing:
   stats:
 
 Roster:
-  symbol: r
+  symbol: 'r'
   type: usable
   desc: Contains a list of all enemies on this floor.
   min: 1
@@ -34,7 +34,7 @@ Roster:
     agi: 1
 
 Stone:
-  symbol: s
+  symbol: 's'
   type: resource
   desc: It\s a rock.
   min: 1

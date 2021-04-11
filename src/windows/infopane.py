@@ -1,7 +1,7 @@
-from src.windows.frame import Frame
-from src.entities.entity import Entity
+from windows.frame import Frame
+from entities.entity import Entity
 import tcod
-from src.constants import xy_to_idx
+from utility.conversion import xy_to_idx
 
 
 class InfoPane(Frame):

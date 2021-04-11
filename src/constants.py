@@ -71,18 +71,3 @@ COMBAT = {'min_hit_chance': 0.25,
           'max_hit_chance': 0.95,
           'base_hit_chance': 0.5,
           'hit_chance_per_diff': 0.1}
-
-
-# UTILITY #
-def xy_to_idx(x, y, width):
-    return x + (y*width)
-
-
-def idx_to_xy(idx, width):
-    y = idx % width
-    x = idx - y
-    return (x, y)
-
-
-
-

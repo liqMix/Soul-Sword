@@ -1,5 +1,5 @@
-from src.windows.messages import Messages
-from src.entities.player import *
+from windows.messages import Messages
+from entities.player import *
 import random as rand
 import simpleaudio as sa
 import threading

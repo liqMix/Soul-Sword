@@ -1,8 +1,9 @@
 import tcod.map
 import tcod.path
 import tcod.random
-from src.game_map.map import *
-from src.windows.frame import Frame
+from game_map.map import *
+from windows.frame import Frame
+from utility import xy_to_idx
 
 
 class MapWindow(Frame):

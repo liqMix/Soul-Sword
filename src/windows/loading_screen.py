@@ -1,5 +1,5 @@
-from src.windows.frame import Frame
-from src.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from windows.frame import Frame
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 import math
 
 
@@ -24,7 +24,7 @@ class Loading(Frame):
         self.draw_status(con)
 
     def draw_progress_bar(self, con):
-        progress = math.floor(self.progress * 50)
+        progress = math.floor(self.progress * self.width//2)
         progress = '#' * progress
         con.print(self.x + 2, self.y + 2, progress)
 

@@ -1,5 +1,5 @@
-from src.windows.frame import Frame
-from src.constants import *
+from windows.frame import Frame
+from constants import *
 
 
 # Manages output to the user of events

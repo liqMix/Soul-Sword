@@ -1,4 +1,4 @@
-from src.constants import MUGSHOT
+from constants import MUGSHOT
 import requests
 import os
 from PIL import Image

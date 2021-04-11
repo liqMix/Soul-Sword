@@ -1,5 +1,5 @@
-from src.entities.entity import Entity
-from src.constants import COLORS, SYMBOLS
+from entities.entity import Entity
+from constants import COLORS, SYMBOLS
 
 
 class Wall(Entity):
