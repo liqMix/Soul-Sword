@@ -1,4 +1,3 @@
-
 from src.constants import MUGSHOT
 import requests
 import os
@@ -15,7 +14,8 @@ chars = np.asarray(list(' .,:;irsXA253hMHGS#9B&@'))
 
 def download_image(source, path):
     response = requests.get(source, verify=False)
-    path = path + '/' + source[-20:]
+    path = path + '/' + source.split('=')[1]
+
     if not os.path.exists(path):
         with open(path, mode='xb') as f:
             f.write(response.content)
@@ -55,7 +55,8 @@ class Mugshot:
                 img_path = download_image(source, path)
                 self.image = process_image(img_path)
             except OSError:
-                delete_image(img_path)
+                if img_path:
+                    delete_image(img_path)
                 self.image = process_image('./data/default.png', temp=False)
 
     def draw(self, con):
