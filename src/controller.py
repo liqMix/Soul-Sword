@@ -16,7 +16,7 @@ class Controller:
 
     def play_audio(self, source, loop=False):
         wave_object = sa.WaveObject.from_wave_file(source)
-
+        wave_object.sample_rate = 22050
         audio_track = wave_object.play()
         self.audio_tracks.append(audio_track)
 
