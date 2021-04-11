@@ -19,8 +19,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class InmateList:
     def __init__(self, num):
-        self.source_path = "data/sources.txt"
-        self.api_key = "data/key.txt"
+        self.source_path = "api/sources.txt"
+        self.api_key = "api/key.txt"
         self.black_list = []
         self.inmate_list = []
         self.source_ids = []
@@ -94,7 +94,7 @@ class InmateList:
             time.sleep(1.25)
 
         # Write changed source list back to file
-        with open('data/sources.txt', 'w') as file:
+        with open('api/sources.txt', 'w') as file:
             for source_id in self.source_ids:
                 file.write(source_id + '\n')
 

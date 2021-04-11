@@ -1,4 +1,4 @@
-from src.data.load_inmates import InmateList
+from src.api.load_inmates import InmateList
 from src.entities.enemies import *
 from src.entities.obstacles import *
 from src.entities.item import *

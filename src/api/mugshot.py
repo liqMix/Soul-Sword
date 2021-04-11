@@ -45,11 +45,11 @@ def process_image(image, temp=True):
 
 class Mugshot:
     def __init__(self, source):
-        path = './data/temp'
+        path = './api/temp'
         if not os.path.isdir(path):
             os.mkdir(path)
         if source == 'style/img/male.jpg' or source == 'style/img/female.jpg':
-            self.image = process_image('./data/default.png', temp=False)
+            self.image = process_image('./api/default.png', temp=False)
         else:
             try:
                 img_path = download_image(source, path)
@@ -57,7 +57,7 @@ class Mugshot:
             except OSError:
                 if img_path:
                     delete_image(img_path)
-                self.image = process_image('./data/default.png', temp=False)
+                self.image = process_image('./api/default.png', temp=False)
 
     def draw(self, con):
         offset = 0
