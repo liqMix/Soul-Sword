@@ -60,20 +60,13 @@ ROOM = config_to_obj('ROOM')
 HALLWAY = config_to_obj('HALLWAY')
 
 # PLAYER #
-PLAYER = {
-    'fov_radius': 5
-}
+PLAYER = config_to_obj('PLAYER')
 
 # MESSAGE WINDOW #
 MESSAGES = config_to_obj('MESSAGES')
 
 # MUGSHOT #
-MUGSHOT = {
-    'scale_factor': 0.05,
-    'intensity_correction': 1.75,
-    'width_correction': 5/4,
-    'x_pos': int(SCREEN_WIDTH // 1.75),
-    'y_pos': int(SCREEN_HEIGHT // 30)}
+MUGSHOT = config_to_obj('MUGSHOT')
 
 # COMBAT #
 COMBAT = config_to_obj("COMBAT")

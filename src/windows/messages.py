@@ -27,7 +27,7 @@ class Messages(Frame):
 
     # Splits the string based on the width of the message box
     def add_message(self, string, color=tcod.white):
-        max_len = MESSAGES['width'] - 4
+        max_len = self.width - 4
         if len(string) <= max_len:
             self.lines.append((string, color))
             return
