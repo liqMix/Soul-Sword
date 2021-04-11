@@ -1,6 +1,6 @@
 from src.windows.inventory import *
 from src.windows.infopane import *
-
+from src.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 def action_handler(action, window):
     controller = window.controller
