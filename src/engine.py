@@ -34,13 +34,7 @@ def main():
             pass
 
     # Initializes console
-    tcod.console_set_custom_font('resources/tileset.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    con_root = tcod.console_init_root(w=SCREEN_WIDTH, h=SCREEN_HEIGHT,
-                                      title='Soul Sword',
-                                      vsync=False,
-                                      renderer=tcod.RENDERER_SDL2)
-
-    con = tcod.console.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
+    tileset = tcod.tileset.load_tilesheet('resources/tileset.png', columns=32, rows=8, charmap=tcod.tileset.CHARMAP_TCOD)
     state = State()
 
     # Init game window
@@ -50,19 +44,21 @@ def main():
     window.show_title()
 
     # Game loop
-    while True:
-        con.clear()
+    with tcod.context.new(columns=SCREEN_WIDTH, rows=SCREEN_HEIGHT, tileset=tileset) as context:
+        while True:
+            con = context.new_console()
+            con.clear()
 
-        # Draw all frames
-        for frame in window.frames_ordered:
-            window.frames[frame].draw(con)
+            # Draw all frames
+            for frame in window.frames_ordered:
+                window.frames[frame].draw(con)
 
-        tcod.console_flush()
-        con.blit(con_root)
+            context.present(con, integer_scaling=True)
 
-        # Handle events
-        for event in tcod.event.wait(timeout=1):
-            state.dispatch(event)
+            # Handle events
+            for event in tcod.event.wait(timeout=1):
+                context.convert_event(event)
+                state.dispatch(event)
 
 
 if __name__ == '__main__':
