@@ -1,4 +1,5 @@
 import tcod
+import yaml
 
 # Holds game-wide constants
 
@@ -8,41 +9,9 @@ SCREEN_HEIGHT = 80
 
 
 # ITEMS #
-ITEMS = {'Potion':  {'symbol': 'P',
-                     'type': 'consumable',
-                     'desc': 'Heals your health like you\'d expect it to. (10%)',
-                     'min': 1,
-                     'max': 10,
-                     'stats': {'int': 1}},
-
-         'Sword':   {'symbol': '|',
-                     'type': 'equip',
-                     'desc': 'Wow cool! Nice. Careful!',
-                     'min': 1,
-                     'max': 3,
-                     'stats': {'str': 1}},
-
-         'Nothing': {'symbol': 'n',
-                     'type': 'consumable',
-                     'desc': 'Truly one of a kind.',
-                     'min': 1,
-                     'max': 2,
-                     'stats': {}},
-
-         'Roster':  {'symbol': 'r',
-                     'type': 'usable',
-                     'desc': 'Contains a list of all enemies on this floor.',
-                     'min': 1,
-                     'max': 2,
-                     'stats': {'agi': 1}},
-
-         'Stone':   {'symbol': 's',
-                     'type': 'resource',
-                     'desc': 'It\'s a rock.',
-                     'min': 1,
-                     'max': 20,
-                     'stats': {'def': 1}}
-         }
+ITEM_DEF = "resources/items.yaml"
+with open(ITEM_DEF) as file:
+    ITEMS = yaml.safe_load(file)
 
 
 # COLORS #
