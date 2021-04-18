@@ -20,6 +20,7 @@ class MapWindow(Frame):
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)
         self.top_left_y = self.y - (self.view_y // 2)
+        self.audio_source = 'resources/audio/game.wav'
 
     # Draw map to screen
     def draw(self, con):
