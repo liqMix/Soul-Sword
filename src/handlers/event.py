@@ -1,16 +1,24 @@
-from windows.inventory import *
-from windows.infopane import *
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from .audio import AudioHandler
+from windows.infopane import *
+from windows.inventory import *
 
-def action_handler(action, window):
-    controller = window.controller
-    player = controller.player
-    move = action.get('move')
-    toggle = action.get('toggle')
-    use = action.get('use')
-    controller.clear_audio()
 
-    if move:
+class EventHandler:
+
+    @staticmethod
+    def handle_action(action, window):
+        player = window.controller.player
+        if 'move' in action:
+            EventHandler._handle_move(action['move'], player, window)
+        elif 'toggle' in action:
+            EventHandler._handle_toggle(action['toggle'], player, window)
+        elif 'use' in action:
+            EventHandler._handle_use(window)
+
+    @staticmethod
+    def _handle_move(move, player, window):
+        move = move.value
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
         name = top_frame.name
@@ -18,7 +26,7 @@ def action_handler(action, window):
             # Manipulate window
             top_frame.select(move)
 
-        elif name is 'gamemap':
+        elif name == 'gamemap':
             # Manipulate player's position on map
             game_map = top_frame.map
             if game_map.check_move(move, player):
@@ -29,30 +37,32 @@ def action_handler(action, window):
             player.update_fov(game_map.tcod_map)
             return True
 
-    if use:
+    @staticmethod
+    def _handle_use(window):
         # Get top window
         top_frame = window.frames[window.frames_ordered[-1]]
         name = top_frame.name
-        if name is 'title':
+        if name == 'title':
             selection = top_frame.selection
             if selection == 'New Game':
                 window.remove_frame('title')
                 window.new_game()
-            elif selection is 'Exit':
-                controller.stop_audio()
+            elif selection == 'Exit':
+                AudioHandler.stop_audio()
                 raise SystemExit()
 
-    if toggle:
+    @staticmethod
+    def _handle_toggle(toggle, player, window):
         # Toggle off
         if toggle in window.frames:
-            if toggle is 'inventory':
+            if toggle == 'inventory':
                 window.frames, window.frames_ordered = window.frames[toggle].history
             else:
                 window.remove_frame(toggle)
 
         # Toggle on
         else:
-            if toggle is 'inventory':
+            if toggle == 'inventory':
                 inventory = Inventory(player, size=(SCREEN_WIDTH, SCREEN_HEIGHT))
                 inventory.history = (window.frames, window.frames_ordered)
                 inventory.select(None)
@@ -61,12 +71,12 @@ def action_handler(action, window):
                 window.add_frame(inventory)
                 return True
 
-            if toggle is 'info_pane':
+            if toggle == 'info_pane':
                 if 'gamemap' not in window.frames:
                     return False
                 if 'inventory' not in window.frames:
-                    init_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-                    anchor = (SCREEN_WIDTH//4, 0)
+                    init_pos = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+                    anchor = (SCREEN_WIDTH // 4, 0)
                     info_pane = InfoPane(init_pos, anchor, window.frames['gamemap'])
                     info_pane.history = (window.frames, window.frames_ordered)
 

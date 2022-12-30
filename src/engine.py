@@ -1,31 +1,27 @@
 import tcod.event
+
 from constants import *
+from handlers import AudioHandler, EventHandler, InputHandler
 from windows.window import Window
-from handlers.input_handlers import handle_keys
-from handlers.event_handlers import action_handler
 
 
 def main():
     class State(tcod.event.EventDispatch):
         def ev_quit(self, event):
-            if window.controller:
-                window.controller.stop_audio()
+            AudioHandler.stop_audio()
             raise SystemExit()
 
         def ev_keydown(self, event):
             if not event:
                 return
-            action = handle_keys(event)
-            exit = action.get('exit')
-            fullscreen = action.get('fullscreen')
-
-            if exit:
+            action = InputHandler.get_action(event)
+            if 'exit' in action:
                 self.ev_quit(event)
 
-            if fullscreen:
+            if 'fullscreen' in action:
                 tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
-            action_handler(action, window)
+            EventHandler.handle_action(action, window)
 
         def ev_mousebuttondown(self, event):
             pass
@@ -34,13 +30,14 @@ def main():
             pass
 
     # Initializes console
-    tileset = tcod.tileset.load_tilesheet('resources/tileset.png', columns=32, rows=8, charmap=tcod.tileset.CHARMAP_TCOD)
+    tileset = tcod.tileset.load_tilesheet('resources/tileset.png', columns=32, rows=8,
+                                          charmap=tcod.tileset.CHARMAP_TCOD)
     state = State()
 
     # Init game window
     center = (SCREEN_WIDTH // 2,
               SCREEN_HEIGHT // 2)
-    window = Window(center=center, size=(SCREEN_WIDTH-5, SCREEN_HEIGHT-5))
+    window = Window(center=center, size=(SCREEN_WIDTH - 5, SCREEN_HEIGHT - 5))
     window.show_title()
 
     # Game loop

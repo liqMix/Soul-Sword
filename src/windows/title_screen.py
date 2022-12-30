@@ -34,6 +34,7 @@ class Title(Frame):
         self.draw_selections(con, offset)
 
     def select(self, move):
+        print(move)
         dx, dy = move
         index = self.selections.index(self.selection)
 

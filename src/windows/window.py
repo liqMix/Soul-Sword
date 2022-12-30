@@ -1,10 +1,9 @@
-from controller import Controller
-from windows.game_map import MapWindow
-from windows.stats import Stats
-from windows.title_screen import Title
-from windows.loading_screen import Loading
-from constants import *
 import threading
+
+from constants import *
+from controller import Controller
+from handlers import AudioHandler
+from windows import Loading, MapWindow, Stats, Title
 
 
 class Window:
@@ -23,7 +22,7 @@ class Window:
         self.frames[frame.name] = frame
         self.frames_ordered.append(frame.name)
         if frame.audio_source:
-            self.controller.play_audio(frame.audio_source, loop=True)
+            AudioHandler.play_bgm(frame.audio_source)
 
     def remove_frame(self, name):
         del self.frames[name]
@@ -34,7 +33,7 @@ class Window:
         self.frames_ordered = []
 
     def show_title(self):
-        self.add_frame(Title(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2),
+        self.add_frame(Title(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2),
                              size=(SCREEN_WIDTH, SCREEN_HEIGHT)))
 
     def new_game(self):
@@ -42,13 +41,13 @@ class Window:
         x.start()
 
     def init_game(self):
-        self.controller.loading = Loading(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        self.controller.loading = Loading(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         self.add_frame(self.controller.loading)
         player = self.controller.player
         self.game_map = MapWindow(self.center, player=player)
         self.stats = Stats(player)
         self.remove_frame('loading')
-        self.controller.stop_audio()
+        AudioHandler.stop_audio()
         self.add_frame(self.stats)
         self.add_frame(self.controller.messages)
         self.add_frame(self.game_map)
