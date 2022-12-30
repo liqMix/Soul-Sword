@@ -1,5 +1,5 @@
 tcod==12.2.0
 simpleaudio==1.0.4
-requests==2.25.1
+requests==2.28.1
 pillow==9.3.0
-pyYaml==5.4.1
+pyYaml==6.0
