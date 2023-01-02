@@ -55,6 +55,8 @@ def main():
             # Handle events
             for event in tcod.event.wait(timeout=1):
                 context.convert_event(event)
+                if isinstance(event, tcod.event.Quit):
+                    raise SystemExit()
                 state.dispatch(event)
 
 

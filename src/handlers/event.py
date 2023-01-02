@@ -1,5 +1,4 @@
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from .audio import AudioHandler
 from windows.infopane import *
 from windows.inventory import *
 
@@ -48,7 +47,6 @@ class EventHandler:
                 window.remove_frame('title')
                 window.new_game()
             elif selection == 'Exit':
-                AudioHandler.stop_audio()
                 raise SystemExit()
 
     @staticmethod

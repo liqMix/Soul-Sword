@@ -1,6 +1,7 @@
 from definitions.enums import Action, Movement
 from tcod.event import KMOD_ALT
 
+
 # Initializes the class
 class InputHandler:
 

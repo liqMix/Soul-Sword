@@ -1,51 +1,66 @@
+import time
+import wave
 import threading
+import pyaudio
 
-import simpleaudio as sa
+CHUNK = 1024
 
 
 class AudioHandler:
     volume = 100
     muted = False
-    _bgm_track: sa.PlayObject = None
-    _sfx_tracks: [sa.PlayObject] = []
+    _p = pyaudio.PyAudio()
+    _bgm_stream: pyaudio.Stream = None
+    _sfx_streams: [pyaudio.Stream] = []
 
-    @staticmethod
-    def get_wave(source) -> sa.WaveObject:
-        wave = sa.WaveObject.from_wave_file(source)
-        return wave
-
-    @staticmethod
-    def loop_bgm(track: sa.PlayObject, wave: sa.WaveObject):
-        t = track
-        while AudioHandler._bgm_track == t:
-            if not AudioHandler._bgm_track.is_playing():
-                t = wave.play()
-                AudioHandler._bgm_track = t
-
-    @staticmethod
-    def play_bgm(source):
-        wave = AudioHandler.get_wave(source)
-        if AudioHandler._bgm_track:
-            AudioHandler._bgm_track.stop()
-        track = wave.play()
-        AudioHandler._bgm_track = track
-        x = threading.Thread(target=AudioHandler.loop_bgm, args=(track, wave,))
-        x.start()
-
-    @staticmethod
-    def play_sfx(source):
-        wave = AudioHandler.get_wave(source)
-        track = wave.play()
-        AudioHandler._sfx_tracks.append(track)
-
-    @staticmethod
-    def stop_audio():
-        AudioHandler._bgm_track.stop()
-        for t in AudioHandler._sfx_tracks:
-            t.stop()
-
-    @staticmethod
-    def clear_audio():
+    def __del__(self):
         AudioHandler.stop_audio()
         AudioHandler._bgm_track = None
         AudioHandler._sfx_tracks = []
+
+    @staticmethod
+    def get_stream(source):
+        def cb(in_data, frame_count, time_info, status):
+            data = wf.readframes(frame_count)
+            return data, pyaudio.paContinue
+
+        wf = wave.open(source, 'rb')
+        p = AudioHandler._p
+        stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                        channels=wf.getnchannels(),
+                        rate=wf.getframerate(),
+                        output=True,
+                        stream_callback=cb
+                        )
+        return stream
+
+    @staticmethod
+    def play_stream(stream):
+        while stream.is_active():
+            time.sleep(0.1)
+        stream.close()
+
+    @staticmethod
+    def loop_bgm():
+        while True:
+            if AudioHandler._bgm_stream and not AudioHandler._bgm_stream.is_active():
+                AudioHandler._bgm_stream.start_stream()
+
+    @staticmethod
+    def play_bgm(source):
+        stream = AudioHandler.get_stream(source)
+        if AudioHandler._bgm_stream:
+            AudioHandler._bgm_stream.close()
+        AudioHandler._bgm_stream = stream
+        threading.Thread(target=AudioHandler.play_stream, args=(AudioHandler._bgm_stream,))
+
+    @staticmethod
+    def play_sfx(source):
+        stream = AudioHandler.get_stream(source)
+
+
+    @staticmethod
+    def stop_audio():
+        AudioHandler._bgm_stream.close()
+        for s in AudioHandler._sfx_streams:
+            s.close()
