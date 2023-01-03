@@ -17,9 +17,14 @@ class Movement(Enum):
     WAIT = (0, 0)
 
     @staticmethod
-    def from_action(action: Action) -> Movement:
+    def is_move_action(action: Action):
+        return action in action_to_move
+
+    @staticmethod
+    def from_action(action: Action) -> Movement | None:
         if action in action_to_move:
-            return action_to_move[action]
+            return action_to_move[action].value
+        return None
 
 
 action_to_move = {

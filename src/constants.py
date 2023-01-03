@@ -63,7 +63,7 @@ HALLWAY = config_to_obj('HALLWAY')
 PLAYER = config_to_obj('PLAYER')
 
 # MESSAGE WINDOW #
-MESSAGES = config_to_obj('MESSAGES')
+MESSAGE_CONFIG = config_to_obj('MESSAGES')
 
 # MUGSHOT #
 MUGSHOT = config_to_obj('MUGSHOT')

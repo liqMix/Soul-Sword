@@ -1,4 +1,5 @@
 from definitions.enums import Action, Movement
+from definitions import Event
 from tcod.event import KMOD_ALT
 
 
@@ -6,35 +7,35 @@ from tcod.event import KMOD_ALT
 class InputHandler:
 
     @staticmethod
-    def get_action(key):
+    def get_action(key) -> Action | None:
         # type = key.type ??
         symbol = key.sym
-        mod = key.mod
 
         # Identify Action
         action = Action.from_key(symbol)
 
-        # Movement
-        movement = Movement.from_action(action)
-        if movement is not None:
-            return {'move': movement}
+        if not action:
+            return
 
-        # Non-movement
-        match action:
-            case Action.INVENTORY:
-                return {'toggle': 'inventory'}
-            case Action.INFO:
-                return {'toggle': 'info_pane'}
-            case Action.USE:
-                return {'use': True}
-            case Action.EXIT:
-                return {'exit': True}
-            case Action.FULLSCREEN:
-                if KMOD_ALT:
-                    return {'fullscreen': True}
+        # add mods to key->action listing
+        if action == action.FULLSCREEN:
+            if KMOD_ALT:
+                return Action.FULLSCREEN
+            return None
 
-        print(symbol)
-        return {}
+        return action
+
+    @staticmethod
+    def get_input_event(key):
+        a = InputHandler.get_action(key)
+        p = []
+        if Movement.is_move_action(a):
+            p = [Movement.from_action(a)]
+
+        return Event(
+            action=a,
+            params=p
+        )
 
     @staticmethod
     def handle_mouse(mouse):

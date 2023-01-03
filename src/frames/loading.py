@@ -1,30 +1,36 @@
-from windows.frame import Frame
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 import math
+
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from .frame import Frame
 
 
 class Loading(Frame):
+    progress: int
+    status: str
+
     def __init__(self, center=(0, 0)):
-        super(Loading, self).__init__(center,
-                                      size=(SCREEN_WIDTH, SCREEN_HEIGHT),
-                                      name='loading')
+        super(Loading, self).__init__(
+            center,
+            size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+            name='Loading...'
+        )
         self.x = self.width // 4
         self.y = self.height // 2
         self.progress = 0
         self.status = ''
 
     def draw(self, con):
-        con.draw_frame(self.x, self.y, self.width//2, self.height//12,
-                       'Loading...',
-                       fg=(255, 255, 255),
-                       bg=(0, 0, 0),
-                       bg_blend=0)
-
+        con.draw_frame(
+            self.x, self.y, self.width // 2, self.height // 12,
+            'Loading...',
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            bg_blend=0)
         self.draw_progress_bar(con)
         self.draw_status(con)
 
     def draw_progress_bar(self, con):
-        progress = math.floor(self.progress * self.width//2)
+        progress = math.floor(self.progress * self.width // 2)
         progress = '#' * progress
         con.print(self.x + 2, self.y + 2, progress)
 

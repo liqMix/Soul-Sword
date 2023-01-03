@@ -17,7 +17,6 @@ class Player(Entity):
 
     def move(self, move):
         super(Player, self).move(move)
-        self.controller.increment_ticks(1)
 
     def set_view(self, view):
         self.view_history = view

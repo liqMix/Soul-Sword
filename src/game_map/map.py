@@ -1,21 +1,23 @@
-from api.load_inmates import InmateList
-from entities.enemies import *
-from entities.obstacles import *
-from entities.item import *
-from constants import *
-from utility import xy_to_idx, idx_to_xy
+import math
+import random
+
+import numpy as np
 import tcod.map
 import tcod.path
-import random
-import numpy as np
-import math
+
+from api.load_inmates import InmateList
+from constants import *
+from controller import Controller
+from entities.enemies import *
+from entities.item import *
+from entities.obstacles import *
+from utility import xy_to_idx, idx_to_xy
 
 
 class GameMap:
-    def __init__(self, size_x, size_y, num_rooms, player, controller):
+    def __init__(self, size_x, size_y, num_rooms, player):
         # Controller
-        self.controller = controller
-        loading = controller.loading
+        loading = Controller.loading
         loading.update(0, 'Generating map...')
 
         # Map dimensions
@@ -35,7 +37,7 @@ class GameMap:
                              'blocked': True}
         self.rooms = []
         self.hallways = []
-        self.origin = (0, 0) # Origin is set when first room is generated
+        self.origin = (0, 0)  # Origin is set when first room is generated
 
         for i in range(num_rooms):
             print("Generating room: ", i)
@@ -50,8 +52,8 @@ class GameMap:
         self.player = player
         self.player.set_pos(self.origin)
         self.tiles[xy_to_idx(self.player.x, self.player.y, self.width)]['entity'] = self.player
-        self.entities = {'player':  self.player,
-                         'items':   [],
+        self.entities = {'player': self.player,
+                         'items': [],
                          'enemies': [],
                          'blocked': True}
 
@@ -75,7 +77,7 @@ class GameMap:
             h = int(random.randrange(min_d, max_d))
             (x, y) = (self.width // 2, self.height // 2)
             room = Room(x, y, w, h)
-            self.origin = (room.x + w//2, room.y + h//2)
+            self.origin = (room.x + w // 2, room.y + h // 2)
         else:
             room = self.add_room()
 
@@ -105,7 +107,6 @@ class GameMap:
 
             # Keep generating areas until an unoccupied one is found
             while not self.area_free(hallway):
-
                 # Select origin room
                 origin = random.choice(self.rooms)
 
@@ -149,7 +150,7 @@ class GameMap:
 
         for i in range(room.x, room.x2):
             for j in range(room.y, room.y2):
-                if self.tiles[xy_to_idx(i, j, self.width)]['entity'].type is not 'wall':
+                if self.tiles[xy_to_idx(i, j, self.width)]['entity'].type != 'wall':
                     return False
 
         return True
@@ -170,7 +171,7 @@ class GameMap:
         # Check if currently occupied
         elif tile['blocked']:
             if tile['entity']:
-                self.controller.attack(entity, tile['entity'])
+                Controller.attack(entity, tile['entity'])
             return False
 
         # Find walkable path to destination
@@ -195,7 +196,7 @@ class GameMap:
         for item in ITEMS.keys():
             for i in range(random.randrange(ITEMS[item]['min'], ITEMS[item]['max'])):
                 idx = None
-                while idx is None or self.tiles[idx]['entity'].type is not 'ground':
+                while idx is None or self.tiles[idx]['entity'].type != 'ground':
                     rand_x = math.floor(np.random.random() * self.width)
                     rand_y = math.floor(np.random.random() * self.height)
                     idx = xy_to_idx(rand_x, rand_y, self.width)
@@ -210,7 +211,7 @@ class GameMap:
         for enemy in enemies.inmate_list:
 
             idx = None
-            while idx is None or (self.tiles[idx]['blocked'] or self.tiles[idx]['entity'].type is not 'ground'):
+            while idx is None or (self.tiles[idx]['blocked'] or self.tiles[idx]['entity'].type != 'ground'):
                 rand_x = math.floor(np.random.random() * self.width)
                 rand_y = math.floor(np.random.random() * self.height)
                 idx = xy_to_idx(rand_x, rand_y, self.width)
@@ -249,39 +250,38 @@ class GameMap:
                 self.entities['enemies'].remove(enemy)
 
 
-
 class Room:
     def __init__(self, x=0, y=0, w=0, h=0, direction=None):
-        if direction:
-            if direction is 'N':
+        match direction:
+            case 'N':
                 self.x = x
                 self.y = y
                 self.x2 = x + w
                 self.y2 = y + h
-            if direction is 'S':
+            case 'S':
                 self.x2 = x
                 self.y2 = y
                 self.x = self.x2 - w
                 self.y = self.y2 - h
-            elif direction is 'E':
+            case 'E':
                 self.x = x
                 self.y = y
                 self.x2 = self.x + h
                 self.y2 = self.y + w
-            elif direction is 'W':
+            case 'W':
                 self.x2 = x
                 self.y = y
                 self.x = self.x2 - w
                 self.y2 = self.y + h
-        else:
-            self.x = x
-            self.y = y
-            self.x2 = x+w
-            self.y2 = y+h
+            case _:
+                self.x = x
+                self.y = y
+                self.x2 = x + w
+                self.y2 = y + h
 
         self.sides = {
-            'S': {'x': range(self.x+1, self.x2-1), 'y': [self.y+1]},
-            'N': {'x': range(self.x+1, self.x2-1), 'y': [self.y2-1]},
-            'W': {'x': [self.x+1], 'y': range(self.y+1, self.y2-1)},
-            'E': {'x': [self.x2-1], 'y': range(self.y+1, self.y2-1)}
+            'S': {'x': range(self.x + 1, self.x2 - 1), 'y': [self.y + 1]},
+            'N': {'x': range(self.x + 1, self.x2 - 1), 'y': [self.y2 - 1]},
+            'W': {'x': [self.x + 1], 'y': range(self.y + 1, self.y2 - 1)},
+            'E': {'x': [self.x2 - 1], 'y': range(self.y + 1, self.y2 - 1)}
         }

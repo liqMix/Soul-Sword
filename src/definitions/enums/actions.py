@@ -20,6 +20,7 @@ class Action(Enum):
     USE = 'use'
 
     # UI Actions
+    BACK = 'back'
     INVENTORY = 'inventory'
     INFO = 'info'
 
@@ -46,10 +47,10 @@ action_to_key = {
     Action.WAIT: [keys.K_SPACE],
 
     Action.USE: [keys.K_KP_5, keys.SCANCODE_KP_ENTER, 13],
-
+    Action.BACK: [keys.K_ESCAPE],
     Action.INVENTORY: [keys.K_i],
     Action.INFO: [keys.K_f],
 
-    Action.EXIT: [keys.K_ESCAPE],
+    Action.EXIT: [keys.K_F4],
     Action.FULLSCREEN: [keys.K_RETURN]
 }

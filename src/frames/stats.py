@@ -1,4 +1,5 @@
-from windows.frame import Frame
+from controller import Controller
+from .frame import Frame
 
 
 # Stats window containing player details
@@ -14,7 +15,7 @@ class Stats(Frame):
         offset = 2
         increment = 2
 
-        if self.entity.type is 'player':
+        if self.entity.type == 'player':
             # Ticks
             # Name
             # Life
@@ -25,10 +26,10 @@ class Stats(Frame):
             # Inventory
             #   ...
             #   ...
-            #for item in self.entity.inventory:
+            # for item in self.entity.inventory:
             #    count += 1
 
-            con.draw_frame(self.x, self.y, self.width, self.y + (offset*count), self.entity.name)
+            con.draw_frame(self.x, self.y, self.width, self.y + (offset * count), self.entity.name)
             top_anchor = self.y
             left_anchor = self.x + 2
             # Draw level
@@ -37,7 +38,7 @@ class Stats(Frame):
             offset += increment
             # Draw ticks
             con.print(left_anchor, top_anchor + offset,
-                      "Ticks: " + str(self.entity.controller.ticks))
+                      "Ticks: " + str(Controller.tick))
             offset += increment
 
             # Draw life points

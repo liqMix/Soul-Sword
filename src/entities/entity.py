@@ -1,5 +1,7 @@
 import tcod
 
+from handlers.message import MessageHandler
+
 
 class Entity:
     def __init__(self, pos=(0, 0), name=None, symbol=' ', controller=None, color=tcod.white):
@@ -14,11 +16,13 @@ class Entity:
         self.level = 1
         self.weapon = "None"
         self.inventory = []
-        self.stats = {'str': 0,
-                      'int': 0,
-                      'con': 0,
-                      'def': 0,
-                      'agi': 0}
+        self.stats = {
+            'str': 0,
+            'int': 100,
+            'con': 0,
+            'def': 0,
+            'agi': 0
+        }
 
         self.current_hp = 0
         self.total_hp = 0
@@ -38,14 +42,16 @@ class Entity:
 
     def move(self, move):
         dx, dy = move
-        self.set_pos((self.x+dx, self.y+dy))
+        self.set_pos((self.x + dx, self.y + dy))
 
     def draw(self, con, x, y):
-        tcod.console_put_char_ex(con,
-                                 x,
-                                 y,
-                                 self.symbol,
-                                 fore=self.color, back=con.default_bg)
+        tcod.console_put_char_ex(
+            con,
+            x,
+            y,
+            self.symbol,
+            fore=self.color, back=con.default_bg
+        )
 
     def set_pos(self, pos):
         self.prev_pos = self.pos
@@ -55,8 +61,7 @@ class Entity:
     def add_items(self, items):
         for item in items:
             self.inventory.append(item)
-            if self.controller:
-                self.controller.messages.add_message('Picked up ' + item.name + '!', item.color)
+            MessageHandler.create_message('Picked up ' + item.name + '!', item.color)
 
     def update_fov(self, tcod_map):
         x, y = self.pos

@@ -1,64 +1,77 @@
-import tcod.event
+import tcod
 
-from constants import *
-from handlers import AudioHandler, EventHandler, InputHandler
-from windows.window import Window
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from definitions.window import Window
+from frames import Title
+from handlers.event import EventHandler
+from handlers.input import InputHandler
+from handlers.audio import AudioHandler
 
 
-def main():
-    class State(tcod.event.EventDispatch):
-        def ev_quit(self, event):
-            AudioHandler.stop_audio()
-            raise SystemExit()
+class Dispatch(tcod.event.EventDispatch):
+    def ev_keydown(self, key):
+        if not key:
+            return
+        event = InputHandler.get_input_event(key)
+        EventHandler.handle_event(event)
 
-        def ev_keydown(self, event):
-            if not event:
-                return
-            action = InputHandler.get_action(event)
-            if 'exit' in action:
-                self.ev_quit(event)
+    def ev_mousebuttondown(self, button):
+        pass
 
-            if 'fullscreen' in action:
-                tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
+    def ev_mousemotion(self, motion):
+        pass
 
-            EventHandler.handle_action(action, window)
 
-        def ev_mousebuttondown(self, event):
-            pass
+class Engine:
+    tileset: tcod.tileset.Tileset
+    dispatch: tcod.event.EventDispatch
+    window: Window
 
-        def ev_mousemotion(self, event):
-            pass
+    @staticmethod
+    def init():
+        # Set tileset
+        Engine.tileset = tcod.tileset.load_tilesheet(
+            'resources/tileset.png',
+            columns=32,
+            rows=8,
+            charmap=tcod.tileset.CHARMAP_TCOD
+        )
 
-    # Initializes console
-    tileset = tcod.tileset.load_tilesheet('resources/tileset.png', columns=32, rows=8,
-                                          charmap=tcod.tileset.CHARMAP_TCOD)
-    state = State()
+        # Init game window
+        Engine.window = Window()
+        EventHandler.window = Engine.window
 
-    # Init game window
-    center = (SCREEN_WIDTH // 2,
-              SCREEN_HEIGHT // 2)
-    window = Window(center=center, size=(SCREEN_WIDTH - 5, SCREEN_HEIGHT - 5))
-    window.show_title()
+        # Add title frame
+        title = Title()
+        Engine.window.push_frame(title)
 
-    # Game loop
-    with tcod.context.new(columns=SCREEN_WIDTH, rows=SCREEN_HEIGHT, tileset=tileset) as context:
-        while True:
-            con = context.new_console()
-            con.clear()
+        # Create event dispatch
+        Engine.dispatch = Dispatch()
 
-            # Draw all frames
-            for frame in window.frames_ordered:
-                window.frames[frame].draw(con)
+        # Start the game loop
+        Engine.loop()
 
-            context.present(con, integer_scaling=True)
+    @staticmethod
+    def loop():
+        with tcod.context.new(columns=SCREEN_WIDTH, rows=SCREEN_HEIGHT, tileset=Engine.tileset) as context:
+            while True:
+                con = context.new_console()
+                con.clear()
 
-            # Handle events
-            for event in tcod.event.wait(timeout=1):
-                context.convert_event(event)
-                if isinstance(event, tcod.event.Quit):
-                    raise SystemExit()
-                state.dispatch(event)
+                # Draw all frames in window
+                for frame in Engine.window.frames:
+                    frame.draw(con)
+
+                context.present(con, integer_scaling=True)
+
+                # Handle events
+                for e in tcod.event.wait(timeout=1):
+                    context.convert_event(e)
+                    if isinstance(e, tcod.event.Quit):
+                        AudioHandler.close()
+                        raise SystemExit()
+                    Engine.dispatch.dispatch(e)
 
 
 if __name__ == '__main__':
-    main()
+    Engine.init()

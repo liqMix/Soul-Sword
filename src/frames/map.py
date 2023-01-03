@@ -1,26 +1,52 @@
 import tcod.map
 import tcod.path
 import tcod.random
+
+from definitions import Action
 from game_map.map import *
-from windows.frame import Frame
 from utility import xy_to_idx
+from .frame import Frame
+from .info import InfoPane
+from .inventory import Inventory
 
 
-class MapWindow(Frame):
+class Map(Frame):
     def __init__(self, center=(0, 0), player=None):
-        super(MapWindow, self).__init__(center=center, name='gamemap')
+        super(Map, self).__init__(center=center, name='gamemap')
 
         num_rooms = random.randrange(ROOM['min_rooms'], ROOM['max_rooms'])
-        self.map = GameMap(size_x=GAMEMAP['width'],
-                           size_y=GAMEMAP['height'],
-                           num_rooms=num_rooms,
-                           player=player,
-                           controller=player.controller)
+        self.map = GameMap(
+            size_x=GAMEMAP['width'],
+            size_y=GAMEMAP['height'],
+            num_rooms=num_rooms,
+            player=player,
+        )
         self.view_x = 80
         self.view_y = 24
         self.top_left_x = self.x - (self.view_x // 2)
         self.top_left_y = self.y - (self.view_y // 2)
-        self.audio_source = 'resources/audio/game.wav'
+        self.audio_source = 'resources/audio/bgm/game.wav'
+
+    def handle_event(self, event):
+        # Manipulate player's position on map
+        if event.is_move_event():
+            move = event.params[0]
+            player = Controller.player
+            if self.map.check_move(move, Controller.player):
+                player.move(move)
+                self.map.update_cell(player)
+                self.map.get_items(player)
+                Controller.increment_ticks()
+            self.map.enemy_turns()
+            player.update_fov(self.map.tcod_map)
+            return
+        match event.action:
+            case Action.INVENTORY:
+                # Push inventory frame
+                self.window.push_frame(Inventory(Controller.player))
+            case Action.INFO:
+                # Push info frame
+                self.window.push_frame(InfoPane(game_map=self))
 
     # Draw map to screen
     def draw(self, con):
@@ -49,26 +75,28 @@ class MapWindow(Frame):
                             item = tile['items']
                             entity = tile['entity']
 
-                            if entity.type is 'player':
+                            if entity.type == 'player':
                                 entity.draw(con, self.x, self.y)
                             else:
                                 if player.view[y, x]:
-                                    if entity.type is 'ground' and item:
+                                    if entity.type == 'ground' and item:
                                         item[0].draw(con, rel_x + self.x, rel_y + self.y)
                                     else:
                                         entity.draw(con, rel_x + self.x, rel_y + self.y)
                                 elif entity.type in ['ground', 'wall']:
                                     entity.draw_darker(con, rel_x + self.x, rel_y + self.y)
                                 else:
-                                    tcod.console_put_char_ex(con,
-                                                             rel_x + self.x,
-                                                             rel_y + self.y,
-                                                             '.',
-                                                             fore=COLORS['dark_ground'], back=con.default_bg)
+                                    tcod.console_put_char_ex(
+                                        con,
+                                        rel_x + self.x,
+                                        rel_y + self.y,
+                                        '.',
+                                        fore=COLORS['dark_ground'], back=con.default_bg
+                                    )
 
         # Draw border of map
         view_edge_symbol = ord('#')
-        for x in range(self.view_x+1):
+        for x in range(self.view_x + 1):
             con.put_char(x + left_edge, top_edge, view_edge_symbol, tcod.BKGND_NONE)
             con.put_char(x + left_edge, bot_edge, view_edge_symbol, tcod.BKGND_NONE)
 
